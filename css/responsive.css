@@ -1,0 +1,77 @@
+/*
+ * responsive.css - Responsive Adjustments for Mobile & Tablet Screens
+ */
+
+@media (max-width: 1024px) {
+  .dashboard-layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 14px 20px;
+  }
+
+  .navbar-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .navbar-right {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .timetable-grid {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px 14px;
+  }
+
+  .view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .view-header-right {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .config-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .attendance-summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .timetable-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: span 1;
+  }
+
+  .role-selector-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
