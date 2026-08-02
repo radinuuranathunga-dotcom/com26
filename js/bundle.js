@@ -1465,12 +1465,7 @@ function renderNavbar(container) {
       <div class="navbar-left">
         <div class="brand">
           <div class="brand-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/>
-              <path d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/>
-              <path d="M6 9h12"/>
-              <path d="M6 15h12"/>
-            </svg>
+            <img src="assets/ruhuna-logo.jpg" alt="University of Ruhuna Logo" class="brand-img-logo">
           </div>
           <div class="brand-text">
             <span class="brand-title">CompEng Academic Hub</span>
