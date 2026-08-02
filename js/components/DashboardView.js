@@ -152,7 +152,7 @@ export function renderDashboardView(container) {
         <div class="info-card-box mt-4 p-3 bg-secondary border-color rounded">
           <h4 class="font-sm text-cyan mb-1">💡 Access Control Notes</h4>
           <p class="font-xs text-secondary">
-            Timetables, Modules, and Lab Group Leaders are editable <strong>only by Department Admins</strong> (passcode: <code>admin123</code>). Lab Group Leaders log in to take attendance for their respective group.
+            Timetables, Modules, and Lab Group Leaders are editable <strong>only by Department Admins</strong>. Lab Group Leaders log in with their assigned passcode to take attendance for their respective group.
           </p>
         </div>
       </div>

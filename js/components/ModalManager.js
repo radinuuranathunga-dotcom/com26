@@ -31,15 +31,13 @@ export function openPasswordModal(targetRole, targetGroup = 'CE01') {
           ${isLeaderAuth ? `
             <div class="form-group mt-3">
               <label class="form-label">Appointed Leader Student ID / Reg No.:</label>
-              <input type="text" id="auth-st-id-input" class="form-input" required placeholder="e.g. EG/2023/5999" autofocus>
-              <span class="hint-text text-muted font-xs mt-1">e.g. <code>EG/2023/5999</code> (CE01), <code>EG/2024/6016</code> (CE02)</span>
+              <input type="text" id="auth-st-id-input" class="form-input" required placeholder="Enter Registration No..." autofocus>
             </div>
           ` : ''}
 
           <div class="form-group mt-3">
             <label class="form-label">Enter Passcode:</label>
             <input type="password" id="auth-passcode-input" class="form-input" required placeholder="Enter password..." ${!isLeaderAuth ? 'autofocus' : ''}>
-            <span class="hint-text text-muted font-xs mt-1">Default demo passcode: <code>${hintText}</code></span>
           </div>
 
           <div id="auth-error-msg" class="auth-error-text text-rose font-sm mt-2 hidden"></div>

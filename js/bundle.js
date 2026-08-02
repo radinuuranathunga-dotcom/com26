@@ -838,8 +838,8 @@ const STORAGE_KEY = 'COMP_ENG_ACADEMIC_RECORDS_V1';
 
 // Preset Passcodes
 const PASSCODES = {
-  admin: 'admin123',
-  leader: 'leader123'
+  admin: 'com@26Batch',
+  leader: 'lab26@com'
 };
 
 class Store {
@@ -1060,7 +1060,7 @@ class Store {
       return password === PASSCODES.admin;
     }
     if (role === 'leader') {
-      return password === PASSCODES.leader || password.toLowerCase() === 'g1pass';
+      return password === PASSCODES.leader;
     }
     return true;
   }
@@ -1079,16 +1079,16 @@ class Store {
         this.notify();
         return { success: true };
       }
-      return { success: false, message: 'Invalid Admin passcode! (Default: admin123)' };
+      return { success: false, message: 'Invalid Admin passcode!' };
     }
 
     if (role === 'leader') {
       if (password !== PASSCODES.leader) {
-        return { success: false, message: 'Invalid Group Leader passcode! (Default: leader123)' };
+        return { success: false, message: 'Invalid Group Leader passcode!' };
       }
 
       if (!studentId || !studentId.trim()) {
-        return { success: false, message: 'Please enter your appointed Group Leader Student Registration No. (e.g. EG/2023/5999)' };
+        return { success: false, message: 'Please enter your appointed Group Leader Student Registration No.' };
       }
 
       const cleanId = studentId.trim().toLowerCase();
@@ -1647,15 +1647,13 @@ function openPasswordModal(targetRole, targetGroup = 'CE01') {
           ${isLeaderAuth ? `
             <div class="form-group mt-3">
               <label class="form-label">Appointed Leader Student ID / Reg No.:</label>
-              <input type="text" id="auth-st-id-input" class="form-input" required placeholder="e.g. EG/2023/5999" autofocus>
-              <span class="hint-text text-muted font-xs mt-1">e.g. <code>EG/2023/5999</code> (CE01), <code>EG/2024/6016</code> (CE02)</span>
+              <input type="text" id="auth-st-id-input" class="form-input" required placeholder="Enter Registration No..." autofocus>
             </div>
           ` : ''}
 
           <div class="form-group mt-3">
             <label class="form-label">Enter Passcode:</label>
             <input type="password" id="auth-passcode-input" class="form-input" required placeholder="Enter password..." ${!isLeaderAuth ? 'autofocus' : ''}>
-            <span class="hint-text text-muted font-xs mt-1">Default demo passcode: <code>${hintText}</code></span>
           </div>
 
           <div id="auth-error-msg" class="auth-error-text text-rose font-sm mt-2 hidden"></div>
@@ -2640,7 +2638,7 @@ function renderDashboardView(container) {
         <div class="info-card-box mt-4 p-3 bg-secondary border-color rounded">
           <h4 class="font-sm text-cyan mb-1">💡 Access Control Notes</h4>
           <p class="font-xs text-secondary">
-            Timetables, Modules, and Lab Group Leaders are editable <strong>only by Department Admins</strong> (passcode: <code>admin123</code>). Lab Group Leaders log in to take attendance for their respective group.
+            Timetables, Modules, and Lab Group Leaders are editable <strong>only by Department Admins</strong>. Lab Group Leaders log in with their assigned passcode to take attendance for their respective group.
           </p>
         </div>
       </div>

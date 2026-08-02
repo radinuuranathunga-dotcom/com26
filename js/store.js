@@ -9,8 +9,8 @@ const STORAGE_KEY = 'COMP_ENG_ACADEMIC_RECORDS_V1';
 
 // Preset Passcodes
 export const PASSCODES = {
-  admin: 'admin123',
-  leader: 'leader123'
+  admin: 'com@26Batch',
+  leader: 'lab26@com'
 };
 
 class Store {
@@ -231,7 +231,7 @@ class Store {
       return password === PASSCODES.admin;
     }
     if (role === 'leader') {
-      return password === PASSCODES.leader || password.toLowerCase() === 'g1pass';
+      return password === PASSCODES.leader;
     }
     return true;
   }
@@ -250,16 +250,16 @@ class Store {
         this.notify();
         return { success: true };
       }
-      return { success: false, message: 'Invalid Admin passcode! (Default: admin123)' };
+      return { success: false, message: 'Invalid Admin passcode!' };
     }
 
     if (role === 'leader') {
       if (password !== PASSCODES.leader) {
-        return { success: false, message: 'Invalid Group Leader passcode! (Default: leader123)' };
+        return { success: false, message: 'Invalid Group Leader passcode!' };
       }
 
       if (!studentId || !studentId.trim()) {
-        return { success: false, message: 'Please enter your appointed Group Leader Student Registration No. (e.g. EG/2023/5999)' };
+        return { success: false, message: 'Please enter your appointed Group Leader Student Registration No.' };
       }
 
       const cleanId = studentId.trim().toLowerCase();
