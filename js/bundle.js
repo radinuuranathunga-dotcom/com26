@@ -1632,7 +1632,7 @@ function openPasswordModal(targetRole, targetGroup = 'CE01') {
           ${isLeaderAuth ? `
             <div class="login-form-group">
               <span class="login-input-icon">✉️</span>
-              <input type="text" id="auth-st-id-input" class="login-underline-input" required placeholder="Registration ID (e.g. EG/2023/5999)" autofocus>
+              <input type="text" id="auth-st-id-input" class="login-underline-input" required placeholder="Registration ID (e.g. EG/20XX/XXXX)" autofocus>
             </div>
           ` : ''}
 
