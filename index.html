@@ -28,17 +28,6 @@
   <!-- Dynamic Modal & Dialog Portal -->
   <div id="modal-portal"></div>
 
-  <!-- Global Error Handler & Recovery Helper -->
-  <script>
-    window.addEventListener('error', function(e) {
-      console.error('Global error caught:', e);
-      var container = document.getElementById('view-container');
-      if (container && (!container.children || container.children.length === 0)) {
-        container.innerHTML = '<div style="padding: 40px; text-align: center; color: #f43f5e; background: #0f172a; border-radius: 12px; border: 1px solid #f43f5e; margin: 40px auto; max-width: 600px;"><h2 style="margin-bottom: 12px;">⚠️ Application Recovery</h2><p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">The browser encountered a script cache or local storage conflict. Click below to clear cache and reload cleanly.</p><button onclick="localStorage.clear(); location.reload();" style="padding: 12px 24px; background: #06b6d4; color: #fff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">🔄 Clear Storage & Reload Application</button></div>';
-      }
-    });
-  </script>
-
   <!-- Standalone Production JavaScript Bundle (Works on http://localhost:8080 & local file://) -->
   <script src="js/bundle.js"></script>
 </body>

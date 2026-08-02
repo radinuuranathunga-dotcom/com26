@@ -382,9 +382,7 @@ export function renderScheduleView(container) {
     const exportBtn = container.querySelector('#export-schedule-csv');
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
-        import('../utils/exportImport.js').then(module => {
-          module.exportScheduleCsv(store.data.lectures, store.data.labs);
-        });
+        exportScheduleCsv(store.data.lectures, store.data.labs);
       });
     }
   }

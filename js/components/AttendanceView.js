@@ -465,9 +465,7 @@ export function renderAttendanceView(container) {
     // Global quick helper
     window.setLeaderRoleQuick = () => {
       if (!store.authenticatedRoles.leader) {
-        import('./ModalManager.js').then(module => {
-          module.openPasswordModal('leader', selectedGroup);
-        });
+        openPasswordModal('leader', selectedGroup);
       } else {
         store.setRole('leader', selectedGroup);
         showToast(`Switched to Group Leader Mode (${selectedGroup})! You can now mark attendance.`, 'success');
