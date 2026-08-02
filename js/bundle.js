@@ -202,7 +202,6 @@ function exportFullBackupJson(data) {
  * Real Student & Group Roster Data for 26th Batch - Semester 3 - Computer Engineering
  * Academic Year 2026/2027
  */
-
 const INITIAL_MOCK_DATA = {
   department: {
     name: "26th Batch - Computer Engineering Department",
@@ -791,8 +790,6 @@ const INITIAL_MOCK_DATA = {
  * Store.js - Centralized Reactive State Management & LocalStorage Persistence
  * For Computer Engineering Academic Records System
  */
-
-
 const STORAGE_KEY = 'COMP_ENG_ACADEMIC_RECORDS_V1';
 
 // Preset Passcodes
@@ -812,7 +809,12 @@ class Store {
     };
     this.activeLeaderGroup = 'CE01';
     this.activeView = 'dashboard';
-    this.currentTheme = localStorage.getItem('ce_app_theme') || 'dark';
+    this.currentTheme = 'dark';
+    try {
+      this.currentTheme = localStorage.getItem('ce_app_theme') || 'dark';
+    } catch (e) {
+      console.warn("localStorage unavailable:", e);
+    }
     
     // Apply initial theme attribute
     document.documentElement.setAttribute('data-theme', this.currentTheme);
@@ -965,7 +967,9 @@ class Store {
 
   setTheme(theme) {
     this.currentTheme = theme;
-    localStorage.setItem('ce_app_theme', theme);
+    try {
+      localStorage.setItem('ce_app_theme', theme);
+    } catch (e) {}
     document.documentElement.setAttribute('data-theme', theme);
     this.notify();
   }
@@ -1193,7 +1197,6 @@ class Store {
     };
   }
 }
-
 const store = new Store();
 
 
@@ -1202,9 +1205,6 @@ const store = new Store();
  * ModalManager.js - Dialog & Overlay Portal Manager
  * Includes Schedule Modals, Lab Group Modals, Student Profiles, Delete Confirmations, and Role Password Verification
  */
-
-
-
 function openPasswordModal(targetRole, targetGroup = 'CE01') {
   const modalContainer = document.getElementById('modal-portal');
   if (!modalContainer) return;
@@ -1386,7 +1386,6 @@ function openEditLabGroupModal(group) {
     closeModal();
   });
 }
-
 function openScheduleModal(itemType, existingItem = null) {
   const isEdit = !!existingItem;
   const modalContainer = document.getElementById('modal-portal');
@@ -1588,7 +1587,6 @@ function openScheduleModal(itemType, existingItem = null) {
     closeModal();
   });
 }
-
 function openStudentModal(student, isEdit = false) {
   const role = store.currentRole;
   const isLeader = (role === 'leader');
@@ -1864,7 +1862,6 @@ function openDeleteStudentConfirmModal(student) {
     });
   }
 }
-
 function openDeleteConfirmModal(message, onConfirm) {
   const modalContainer = document.getElementById('modal-portal');
   if (!modalContainer) return;
@@ -1906,9 +1903,6 @@ function openDeleteConfirmModal(message, onConfirm) {
 /**
  * Navbar.js - Header Bar with Role Switcher, Password Auth & Theme Toggle
  */
-
-
-
 function renderNavbar(container) {
   const role = store.currentRole;
   const activeView = store.activeView;
@@ -2078,10 +2072,6 @@ function renderNavbar(container) {
 /**
  * DashboardView.js - Main Department Overview & Computer Engineering Hub
  */
-
-
-
-
 function renderDashboardView(container) {
   const role = store.currentRole;
   const isAdmin = role === 'admin';
@@ -2268,10 +2258,6 @@ function renderDashboardView(container) {
 /**
  * ScheduleView.js - Interactive & Editable Timetable Grid for Lectures and Labs
  */
-
-
-
-
 function renderScheduleView(container) {
   const role = store.currentRole;
   const lectures = store.data.lectures;
@@ -2664,11 +2650,6 @@ function renderScheduleView(container) {
  * Access Control Rule: ONLY Lab Group Leaders are authorized to mark attendance for their assigned group.
  * Admin Access Rule: Department Admins have full access to view, analyze, and export Department Master Attendance Summaries (195 Students x 11 Labs).
  */
-
-
-
-
-
 function renderAttendanceView(container) {
   const role = store.currentRole;
   const groups = store.data.labGroups;
@@ -2723,6 +2704,9 @@ function renderAttendanceView(container) {
                s.name.toLowerCase().includes(q) ||
                s.labGroup.toLowerCase().includes(q);
       }
+      return true;
+    });
+
     // Sort filtered students by Group ID and then Registration Number
     filteredStudents.sort((a, b) => {
       if (a.labGroup !== b.labGroup) {
@@ -3364,10 +3348,6 @@ function renderAttendanceView(container) {
 /**
  * StudentsView.js - Roster & Academic Records for 195 Department Students
  */
-
-
-
-
 function renderStudentsView(container) {
   const role = store.currentRole;
   const isAdmin = role === 'admin';
@@ -3587,13 +3567,6 @@ function renderStudentsView(container) {
 /**
  * app.js - Main Application Orchestrator & View Switcher
  */
-
-
-
-
-
-
-
 function initApp() {
   const navbarContainer = document.getElementById('navbar-container');
   const viewContainer = document.getElementById('view-container');
@@ -3628,7 +3601,7 @@ function initApp() {
     } catch (err) {
       console.error("UI Render Error caught:", err);
       try {
-        localStorage.clear();
+        try { localStorage.clear(); } catch (e) {}
         store.resetToDefaults();
       } catch (e) {
         console.error("Reset error:", e);

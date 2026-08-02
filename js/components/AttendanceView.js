@@ -62,6 +62,9 @@ export function renderAttendanceView(container) {
                s.name.toLowerCase().includes(q) ||
                s.labGroup.toLowerCase().includes(q);
       }
+      return true;
+    });
+
     // Sort filtered students by Group ID and then Registration Number
     filteredStudents.sort((a, b) => {
       if (a.labGroup !== b.labGroup) {

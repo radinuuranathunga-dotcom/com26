@@ -42,7 +42,7 @@ function initApp() {
     } catch (err) {
       console.error("UI Render Error caught:", err);
       try {
-        localStorage.clear();
+        try { localStorage.clear(); } catch (e) {}
         store.resetToDefaults();
       } catch (e) {
         console.error("Reset error:", e);

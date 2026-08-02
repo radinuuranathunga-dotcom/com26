@@ -23,7 +23,12 @@ class Store {
     };
     this.activeLeaderGroup = 'CE01';
     this.activeView = 'dashboard';
-    this.currentTheme = localStorage.getItem('ce_app_theme') || 'dark';
+    this.currentTheme = 'dark';
+    try {
+      this.currentTheme = localStorage.getItem('ce_app_theme') || 'dark';
+    } catch (e) {
+      console.warn("localStorage unavailable:", e);
+    }
     
     // Apply initial theme attribute
     document.documentElement.setAttribute('data-theme', this.currentTheme);
@@ -176,7 +181,9 @@ class Store {
 
   setTheme(theme) {
     this.currentTheme = theme;
-    localStorage.setItem('ce_app_theme', theme);
+    try {
+      localStorage.setItem('ce_app_theme', theme);
+    } catch (e) {}
     document.documentElement.setAttribute('data-theme', theme);
     this.notify();
   }
