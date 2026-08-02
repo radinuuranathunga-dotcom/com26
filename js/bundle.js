@@ -2942,12 +2942,6 @@ function renderScheduleView(container) {
                           <span class="detail-icon">🔬</span>
                           <span class="detail-text">${lab.room}</span>
                         </div>
-                        ${lab.equipment ? `
-                          <div class="detail-row equipment-row">
-                            <span class="detail-icon">🛠️</span>
-                            <span class="detail-text equipment-text">${lab.equipment}</span>
-                          </div>
-                        ` : ''}
                       </div>
 
                       <div class="event-card-actions">
