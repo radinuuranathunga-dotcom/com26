@@ -3,6 +3,7 @@
  * For Computer Engineering Academic Records System
  */
 import { INITIAL_MOCK_DATA } from './mockData.js';
+import { firebaseConfig } from './firebaseConfig.js';
 
 const STORAGE_KEY = 'COMP_ENG_ACADEMIC_RECORDS_V1';
 
@@ -36,6 +37,11 @@ class Store {
     // Initial student statistics calculation
     this.recalculateStudentStats();
 
+    // Firestore instance reference
+    this.db = null;
+    this.isCloudConnected = false;
+    this.initFirestoreSync();
+
     // Cross-tab auto-sync & automatic stats calculation for all 195/200 students
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', (e) => {
@@ -60,6 +66,107 @@ class Store {
           }
         } catch (e) {}
       }, 10000);
+    }
+  }
+
+  // Initialize Firebase Cloud Firestore Real-time Subscriptions
+  initFirestoreSync() {
+    try {
+      if (typeof window === 'undefined' || !window.firebase) return;
+      
+      if (!window.firebase.apps || !window.firebase.apps.length) {
+        window.firebase.initializeApp(firebaseConfig);
+      }
+      
+      this.db = window.firebase.firestore();
+      if (!this.db) return;
+
+      this.isCloudConnected = true;
+      console.log("🔥 Firebase Cloud Firestore live real-time sync active.");
+
+      // Firestore listeners
+      this.db.collection('courses').onSnapshot(snapshot => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push(doc.data()));
+          if (list.length > 0) {
+            this.data.courses = list;
+            this.recalculateStudentStats();
+            this.notify();
+          }
+        }
+      }, e => console.warn("Firestore courses sync note:", e));
+
+      this.db.collection('labs').onSnapshot(snapshot => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push(doc.data()));
+          if (list.length > 0) {
+            this.data.labs = list;
+            this.recalculateStudentStats();
+            this.notify();
+          }
+        }
+      }, e => console.warn("Firestore labs sync note:", e));
+
+      this.db.collection('attendanceLogs').onSnapshot(snapshot => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push(doc.data()));
+          this.data.attendanceLogs = list;
+          this.recalculateStudentStats();
+          this.notify();
+        }
+      }, e => console.warn("Firestore attendanceLogs sync note:", e));
+
+      this.db.collection('students').onSnapshot(snapshot => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push(doc.data()));
+          if (list.length > 0) {
+            this.data.students = list;
+            this.sortStudentsByRegistration(this.data.students);
+            this.recalculateStudentStats();
+            this.notify();
+          }
+        }
+      }, e => console.warn("Firestore students sync note:", e));
+
+      this.db.collection('labGroups').onSnapshot(snapshot => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => list.push(doc.data()));
+          if (list.length > 0) {
+            this.data.labGroups = list;
+            this.notify();
+          }
+        }
+      }, e => console.warn("Firestore labGroups sync note:", e));
+
+    } catch (e) {
+      console.warn("Firestore initialization status:", e);
+    }
+  }
+
+  syncItemToFirestore(collectionName, docId, dataObj) {
+    if (this.db && docId) {
+      try {
+        const cleanId = String(docId).replace(/[\/\s]/g, '_');
+        this.db.collection(collectionName).doc(cleanId).set(dataObj, { merge: true });
+      } catch (e) {
+        console.warn(`Firestore sync set error (${collectionName}/${docId}):`, e);
+      }
+    }
+  }
+
+  deleteItemFromFirestore(collectionName, docId) {
+    if (this.db && docId) {
+      try {
+        const cleanId = String(docId).replace(/[\/\s]/g, '_');
+        this.db.collection(collectionName).doc(cleanId).delete();
+      } catch (e) {
+        console.warn(`Firestore sync delete error (${collectionName}/${docId}):`, e);
+      }
     }
   }
 
@@ -239,6 +346,7 @@ class Store {
         }
       });
 
+      this.syncItemToFirestore('labGroups', updatedGroup.id, updatedGroup);
       this.notify();
       return true;
     }
@@ -247,6 +355,7 @@ class Store {
 
   addLabGroup(newGroup) {
     this.data.labGroups.push(newGroup);
+    this.syncItemToFirestore('labGroups', newGroup.id, newGroup);
     this.notify();
     return newGroup;
   }
@@ -262,6 +371,7 @@ class Store {
     course.labsCount = course.labsCount || 0;
     this.data.courses.push(course);
     this.recalculateStudentStats();
+    this.syncItemToFirestore('courses', course.code, course);
     this.notify();
     return { success: true, course };
   }
@@ -272,6 +382,7 @@ class Store {
     if (index !== -1) {
       this.data.courses[index] = { ...this.data.courses[index], ...updatedCourse, code: cleanCode };
       this.recalculateStudentStats();
+      this.syncItemToFirestore('courses', cleanCode, updatedCourse);
       this.notify();
       return { success: true };
     }
@@ -291,8 +402,10 @@ class Store {
 
     if (removedLabIds.length > 0) {
       this.data.attendanceLogs = this.data.attendanceLogs.filter(log => !removedLabIds.includes(log.labId));
+      removedLabIds.forEach(labId => this.deleteItemFromFirestore('labs', labId));
     }
 
+    this.deleteItemFromFirestore('courses', cleanCode);
     this.recalculateStudentStats();
     this.notify();
     return { success: true };
@@ -303,6 +416,7 @@ class Store {
     lecture.id = `LEC-${Date.now().toString().slice(-4)}`;
     lecture.type = "Lecture";
     this.data.lectures.push(lecture);
+    this.syncItemToFirestore('lectures', lecture.id, lecture);
     this.notify();
     return lecture;
   }
@@ -311,6 +425,7 @@ class Store {
     const index = this.data.lectures.findIndex(l => l.id === updatedLecture.id);
     if (index !== -1) {
       this.data.lectures[index] = { ...this.data.lectures[index], ...updatedLecture };
+      this.syncItemToFirestore('lectures', updatedLecture.id, updatedLecture);
       this.notify();
       return true;
     }
@@ -319,6 +434,7 @@ class Store {
 
   deleteLecture(id) {
     this.data.lectures = this.data.lectures.filter(l => l.id !== id);
+    this.deleteItemFromFirestore('lectures', id);
     this.notify();
   }
 
@@ -327,6 +443,7 @@ class Store {
     lab.type = "Lab";
     this.data.labs.push(lab);
     this.recalculateStudentStats();
+    this.syncItemToFirestore('labs', lab.id, lab);
     this.notify();
     return lab;
   }
@@ -336,6 +453,7 @@ class Store {
     if (index !== -1) {
       this.data.labs[index] = { ...this.data.labs[index], ...updatedLab };
       this.recalculateStudentStats();
+      this.syncItemToFirestore('labs', updatedLab.id, updatedLab);
       this.notify();
       return true;
     }
@@ -345,6 +463,7 @@ class Store {
   deleteLab(id) {
     this.data.labs = this.data.labs.filter(l => l.id !== id);
     this.data.attendanceLogs = this.data.attendanceLogs.filter(log => log.labId !== id);
+    this.deleteItemFromFirestore('labs', id);
     this.recalculateStudentStats();
     this.notify();
   }
@@ -381,6 +500,7 @@ class Store {
     }
 
     this.recalculateStudentStats();
+    this.syncItemToFirestore('attendanceLogs', logEntry.id, logEntry);
     this.notify();
     return logEntry;
   }
