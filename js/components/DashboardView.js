@@ -27,10 +27,10 @@ export function renderDashboardView(container) {
           <button id="dash-add-course-btn-top" class="btn btn-primary">
             ➕ Add Academic Module
           </button>
+          <button id="quick-backup-btn" class="btn btn-outline">
+            📦 Backup Full JSON
+          </button>
         ` : ''}
-        <button id="quick-backup-btn" class="btn btn-outline">
-          📦 Backup Full JSON
-        </button>
       </div>
     </div>
 

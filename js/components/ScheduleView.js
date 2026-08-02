@@ -65,10 +65,10 @@ export function renderScheduleView(container) {
             <button id="add-lab-btn" class="btn btn-secondary">
               <span>⚡</span> Add Lab Session
             </button>
+            <button id="export-schedule-csv" class="btn btn-outline">
+              📥 Export Schedule CSV
+            </button>
           ` : ''}
-          <button id="export-schedule-csv" class="btn btn-outline">
-            📥 Export Schedule CSV
-          </button>
         </div>
       </div>
 

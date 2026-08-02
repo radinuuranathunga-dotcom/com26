@@ -270,6 +270,9 @@ export function renderAttendanceView(container) {
             <button id="export-master-attendance-csv" class="btn btn-emerald">
               📥 Export Master Attendance CSV (195 Students)
             </button>
+            <button id="export-log-csv" class="btn btn-outline">
+              📥 Export Group Log CSV
+            </button>
           ` : (isLeaderAuthorized ? `
             <button id="save-attendance-btn" class="btn btn-emerald btn-lg animate-pulse">
               💾 Save & Submit Register
@@ -279,9 +282,6 @@ export function renderAttendanceView(container) {
               ⚡ Switch to Group Leader Mode to Take Attendance
             </button>
           `)}
-          <button id="export-log-csv" class="btn btn-outline">
-            📥 Export Group Log CSV
-          </button>
         </div>
       </div>
 

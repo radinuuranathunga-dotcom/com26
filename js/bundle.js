@@ -2501,10 +2501,10 @@ function renderDashboardView(container) {
           <button id="dash-add-course-btn-top" class="btn btn-primary">
             ➕ Add Academic Module
           </button>
+          <button id="quick-backup-btn" class="btn btn-outline">
+            📦 Backup Full JSON
+          </button>
         ` : ''}
-        <button id="quick-backup-btn" class="btn btn-outline">
-          📦 Backup Full JSON
-        </button>
       </div>
     </div>
 
@@ -2821,10 +2821,10 @@ function renderScheduleView(container) {
             <button id="add-lab-btn" class="btn btn-secondary">
               <span>⚡</span> Add Lab Session
             </button>
+            <button id="export-schedule-csv" class="btn btn-outline">
+              📥 Export Schedule CSV
+            </button>
           ` : ''}
-          <button id="export-schedule-csv" class="btn btn-outline">
-            📥 Export Schedule CSV
-          </button>
         </div>
       </div>
 
@@ -3473,6 +3473,9 @@ function renderAttendanceView(container) {
             <button id="export-master-attendance-csv" class="btn btn-emerald">
               📥 Export Master Attendance CSV (195 Students)
             </button>
+            <button id="export-log-csv" class="btn btn-outline">
+              📥 Export Group Log CSV
+            </button>
           ` : (isLeaderAuthorized ? `
             <button id="save-attendance-btn" class="btn btn-emerald btn-lg animate-pulse">
               💾 Save & Submit Register
@@ -3482,9 +3485,6 @@ function renderAttendanceView(container) {
               ⚡ Switch to Group Leader Mode to Take Attendance
             </button>
           `)}
-          <button id="export-log-csv" class="btn btn-outline">
-            📥 Export Group Log CSV
-          </button>
         </div>
       </div>
 
@@ -3954,9 +3954,11 @@ function renderStudentsView(container) {
               ➕ Add New Member to ${isLeader ? activeLeaderGroup : 'Group'}
             </button>
           ` : ''}
-          <button id="export-students-csv" class="btn btn-outline">
-            📥 Export Roster CSV
-          </button>
+          ${isAdmin ? `
+            <button id="export-students-csv" class="btn btn-outline">
+              📥 Export Roster CSV
+            </button>
+          ` : ''}
         </div>
       </div>
 

@@ -50,9 +50,11 @@ export function renderStudentsView(container) {
               ➕ Add New Member to ${isLeader ? activeLeaderGroup : 'Group'}
             </button>
           ` : ''}
-          <button id="export-students-csv" class="btn btn-outline">
-            📥 Export Roster CSV
-          </button>
+          ${isAdmin ? `
+            <button id="export-students-csv" class="btn btn-outline">
+              📥 Export Roster CSV
+            </button>
+          ` : ''}
         </div>
       </div>
 
