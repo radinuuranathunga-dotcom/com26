@@ -6,7 +6,7 @@
 /* Touch & Mobile Interactivity Improvements */
 @media (hover: none) and (pointer: coarse) {
   .btn, .nav-tab, .role-btn, .action-btn, input, select {
-    min-height: 42px;
+    min-height: 38px;
     touch-action: manipulation;
   }
 }
@@ -16,14 +16,14 @@
   .navbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 14px;
-    padding: 14px 18px;
+    gap: 12px;
+    padding: 12px 16px;
   }
 
   .navbar-left {
     flex-direction: column;
     align-items: stretch;
-    gap: 14px;
+    gap: 12px;
     width: 100%;
   }
 
@@ -38,7 +38,7 @@
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
     padding: 4px;
-    scrollbar-width: none; /* Hide scrollbar for Chrome/Firefox */
+    scrollbar-width: none;
   }
 
   .nav-tabs::-webkit-scrollbar {
@@ -89,7 +89,7 @@
 
   .dashboard-layout-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
 
   .timetable-grid {
@@ -97,20 +97,27 @@
   }
 }
 
-/* Mobile Devices (max-width: 768px) */
+/* Mobile Devices & Smartphones (max-width: 768px) */
 @media (max-width: 768px) {
   .main-content {
-    padding: 14px 10px;
+    padding: 10px 8px;
+  }
+
+  .card {
+    padding: 14px 12px;
+    margin-bottom: 14px;
+    border-radius: 12px;
   }
 
   .view-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 14px;
   }
 
   .view-header h2 {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
   }
 
   .view-header-right {
@@ -125,75 +132,98 @@
     justify-content: center;
   }
 
+  /* Compact 2x2 High-Density Smartphone KPI Grid */
   .kpi-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
   }
 
   .kpi-card {
-    padding: 16px 14px;
+    padding: 12px 10px;
+    margin-bottom: 0;
   }
 
   .kpi-value {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin: 4px 0;
   }
 
   .kpi-title {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
   }
 
   .kpi-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+  }
+
+  .kpi-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
   }
 
   .timetable-grid-container {
-    padding: 12px;
+    padding: 10px;
   }
 
   .timetable-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 10px;
   }
 
   .day-column {
-    border-radius: var(--radius-md);
+    border-radius: 10px;
+  }
+
+  .day-header {
+    padding: 10px 12px;
   }
 
   .event-card {
-    padding: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .event-title {
+    font-size: 0.92rem;
   }
 
   .event-card-actions {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+    margin-top: 10px;
   }
 
   .event-card-actions .btn {
     flex: 1;
     justify-content: center;
+    font-size: 0.78rem;
+    padding: 6px 8px;
   }
 
-  /* Table Mobile Touch Support */
-  .table-responsive {
+  /* Table Mobile Touch & Sticky Student ID Support */
+  .table-responsive, .table-container {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border-radius: var(--radius-md);
+    border-radius: 8px;
   }
 
   .data-table {
-    min-width: 600px;
+    min-width: 520px;
   }
 
   .data-table th, .data-table td {
-    padding: 10px 12px;
-    font-size: 0.82rem;
+    padding: 8px 10px;
+    font-size: 0.78rem;
   }
 
   /* Attendance Register Sticky Left Student Identifier for Mobile Scrolling */
   .attendance-table-wrapper {
     overflow-x: auto;
     position: relative;
+    border-radius: 8px;
   }
 
   .attendance-table th:first-child,
@@ -202,24 +232,31 @@
     left: 0;
     z-index: 2;
     background: var(--bg-card);
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.25);
   }
 
   .attendance-summary-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
+    padding: 10px 12px;
   }
 
   .summary-stat-pills {
     flex-wrap: wrap;
+    gap: 6px;
     justify-content: space-between;
+  }
+
+  .stat-pill {
+    padding: 4px 8px;
+    font-size: 0.72rem;
   }
 
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 8px;
   }
 
   .filter-group {
@@ -232,23 +269,23 @@
 
   /* Modal Mobile Bottom Sheet / Dialog Optimization */
   .modal-backdrop {
-    padding: 12px;
+    padding: 8px;
     align-items: flex-end;
   }
 
   .modal-card {
     width: 100% !important;
     max-width: 100% !important;
-    max-height: 90vh;
+    max-height: 88vh;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    padding: 18px 16px;
+    padding: 16px 14px;
     overflow-y: auto;
   }
 
   .modal-footer {
     flex-direction: column-reverse;
-    gap: 8px;
+    gap: 6px;
   }
 
   .modal-footer .btn {
@@ -258,7 +295,7 @@
 
   .form-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
   .full-width {
@@ -268,40 +305,49 @@
   /* Student Roster Mobile Cards */
   .student-cards-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
   .student-card {
-    padding: 14px;
+    padding: 12px;
   }
 
   .action-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 8px;
   }
 }
 
-/* Small Smartphone Screen (< 480px) */
+/* Small Smartphone Screens (< 480px) */
 @media (max-width: 480px) {
-  .kpi-grid {
-    grid-template-columns: 1fr;
-  }
-
   .brand-title {
-    font-size: 1rem;
+    font-size: 0.92rem;
   }
 
   .brand-subtitle {
-    font-size: 0.68rem;
+    font-size: 0.64rem;
   }
 
   .brand-logo {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
   }
 
   .role-btn {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     padding: 6px 8px;
+  }
+
+  .nav-tab {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+
+  .kpi-value {
+    font-size: 1.35rem;
+  }
+
+  .kpi-title {
+    font-size: 0.68rem;
   }
 }
