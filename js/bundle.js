@@ -1443,6 +1443,14 @@ class Store {
       groupsCount: this.data.labGroups.length
     };
   }
+
+  // Convenient Data Getters
+  get courses() { return (this.data && this.data.courses) ? this.data.courses : []; }
+  get labs() { return (this.data && this.data.labs) ? this.data.labs : []; }
+  get lectures() { return (this.data && this.data.lectures) ? this.data.lectures : []; }
+  get labGroups() { return (this.data && this.data.labGroups) ? this.data.labGroups : []; }
+  get students() { return (this.data && this.data.students) ? this.data.students : []; }
+  get attendanceLogs() { return (this.data && this.data.attendanceLogs) ? this.data.attendanceLogs : []; }
 }
 const store = new Store();
 
@@ -4241,7 +4249,7 @@ function initApp() {
   function updateUI() {
     try {
       // 1. Render Header / Navbar
-      if (navbarContainer) renderNavbar(navbarContainer);
+      if (navbarContainer) renderNavbar(store.activeView);
 
       // 2. Render Active View
       const currentView = store.activeView;

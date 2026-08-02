@@ -15,7 +15,7 @@ function initApp() {
   function updateUI() {
     try {
       // 1. Render Header / Navbar
-      if (navbarContainer) renderNavbar(navbarContainer);
+      if (navbarContainer) renderNavbar(store.activeView);
 
       // 2. Render Active View
       const currentView = store.activeView;
