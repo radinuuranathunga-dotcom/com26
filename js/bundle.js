@@ -199,19 +199,19 @@ function exportFullBackupJson(data) {
 
 // --- File: js/firebaseConfig.js ---
 /**
- * firebaseConfig.js - Firebase Cloud Firestore Configuration & Initialization
+ * firebaseConfig.js - Official Firebase Cloud Firestore Credentials
  * Computer Engineering Department Academic Records System
  */
 
-// Default Firebase Project Configuration
-// Replace keys with your own Firebase Console credentials (https://console.firebase.google.com/)
+// Production Firebase Project Configuration (com26-c48f0)
 const firebaseConfig = {
-  apiKey: "AIzaSyDemoKey_ReplaceWithYourFirebaseApiKey",
-  authDomain: "compeng-26th-batch.firebaseapp.com",
-  projectId: "compeng-26th-batch",
-  storageBucket: "compeng-26th-batch.appspot.com",
-  messagingSenderId: "102938475610",
-  appId: "1:102938475610:web:abcdef1234567890"
+  apiKey: "AIzaSyAS17xEGn30HeICqSeNmalw9gbivJ7YVlw",
+  authDomain: "com26-c48f0.firebaseapp.com",
+  projectId: "com26-c48f0",
+  storageBucket: "com26-c48f0.firebasestorage.app",
+  messagingSenderId: "712028352621",
+  appId: "1:712028352621:web:78a13864ff879f24784f64",
+  measurementId: "G-Z7ECKN3280"
 };
 
 let db = null;
@@ -224,7 +224,7 @@ function initFirebase() {
       }
       db = window.firebase.firestore();
       isFirestoreConnected = true;
-      console.log("🔥 Firebase Cloud Firestore initialized successfully.");
+      console.log("🔥 Firebase Cloud Firestore initialized with project com26-c48f0.");
     }
   } catch (e) {
     console.warn("🔥 Firebase initialization note:", e);
