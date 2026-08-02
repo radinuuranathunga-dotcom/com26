@@ -3665,6 +3665,18 @@ function renderAttendanceView(container) {
             </tbody>
           </table>
         </div>
+
+        ${isLeaderAuthorized ? `
+          <div class="card-footer-action mt-4 pad-md text-center" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="text-align: left;">
+              <strong class="text-emerald font-md" style="font-size: 1.1rem;">⚡ Finished Taking Attendance for ${selectedGroup}?</strong>
+              <p class="font-xs text-muted mt-1" style="margin-top: 4px; color: var(--text-secondary);">Click Save & Submit Register to record official attendance logs to the cloud.</p>
+            </div>
+            <button id="save-attendance-btn-bottom" class="btn btn-emerald btn-lg save-attendance-action-btn animate-pulse" style="padding: 12px 32px; font-weight: 700; font-size: 1.05rem;">
+              💾 Save & Submit Register
+            </button>
+          </div>
+        ` : ''}
       `}
     `;
 
@@ -3855,27 +3867,30 @@ function renderAttendanceView(container) {
         });
       }
 
-      // Save & Submit Register
-      const saveBtn = container.querySelector('#save-attendance-btn');
-      if (saveBtn) {
-        saveBtn.addEventListener('click', () => {
-          const currentGroupInfo = groups.find(g => g.id === selectedGroup);
-          const selectedLab = labs.find(l => l.id === selectedLabId);
-          const leaderName = currentGroupInfo ? currentGroupInfo.leaderName : 'Group Leader';
+      // Save & Submit Register (Top & Bottom Buttons)
+      const saveHandler = () => {
+        const currentGroupInfo = groups.find(g => g.id === selectedGroup);
+        const selectedLab = labs.find(l => l.id === selectedLabId);
+        const leaderName = currentGroupInfo ? currentGroupInfo.leaderName : 'Group Leader';
 
-          const logEntry = {
-            labId: selectedLabId,
-            labName: selectedLab ? `${selectedLab.courseCode} ${selectedLab.labNumber || ''}: ${selectedLab.labTitle || selectedLab.labName}` : 'Lab Practical',
-            group: selectedGroup,
-            date: new Date().toISOString().slice(0, 10),
-            updatedByLeader: `${leaderName} (Leader ${selectedGroup})`,
-            records: draftRecords
-          };
+        const logEntry = {
+          labId: selectedLabId,
+          labName: selectedLab ? `${selectedLab.courseCode} ${selectedLab.labNumber || ''}: ${selectedLab.labTitle || selectedLab.labName}` : 'Lab Practical',
+          group: selectedGroup,
+          date: new Date().toISOString().slice(0, 10),
+          updatedByLeader: `${leaderName} (Leader ${selectedGroup})`,
+          records: draftRecords
+        };
 
-          store.saveLabAttendance(logEntry);
-          showToast(`Saved attendance register for ${selectedLab ? (selectedLab.labTitle || selectedLab.labName) : 'Lab'} (${selectedGroup})!`, 'success');
-        });
-      }
+        store.saveLabAttendance(logEntry);
+        showToast(`Saved attendance register for ${selectedLab ? (selectedLab.labTitle || selectedLab.labName) : 'Lab'} (${selectedGroup})!`, 'success');
+      };
+
+      const saveBtnTop = container.querySelector('#save-attendance-btn');
+      if (saveBtnTop) saveBtnTop.addEventListener('click', saveHandler);
+
+      const saveBtnBottom = container.querySelector('#save-attendance-btn-bottom');
+      if (saveBtnBottom) saveBtnBottom.addEventListener('click', saveHandler);
     }
 
     // Export CSV
