@@ -9,59 +9,51 @@ export function openPasswordModal(targetRole, targetGroup = 'CE01') {
   const modalContainer = document.getElementById('modal-portal');
   if (!modalContainer) return;
 
-  const roleTitle = targetRole === 'admin' ? '👑 Admin / Faculty' : '⚡ Lab Group Leader';
+  const roleTitle = targetRole === 'admin' ? 'Admin Login' : 'Leader Login';
   const isLeaderAuth = targetRole === 'leader';
-  const hintText = targetRole === 'admin' ? 'admin123' : 'leader123';
+  const avatarEmoji = targetRole === 'admin' ? '👑' : '⚡';
 
   modalContainer.innerHTML = `
-    <div class="modal-backdrop animate-fade-in">
-      <div class="modal-card modal-card-sm animate-scale-up">
-        <div class="modal-header">
-          <h3>🔒 Authenticate Role Access</h3>
-          <button class="modal-close-btn">&times;</button>
+    <div class="login-modal-backdrop animate-fade-in">
+      <div class="login-modal-card animate-scale-up">
+        <button class="login-close-corner-btn modal-close-btn" title="Close Login">&times;</button>
+        
+        <div class="login-avatar-circle">
+          <span>${avatarEmoji}</span>
         </div>
 
-        <form id="password-auth-form" class="modal-body">
-          <div class="auth-icon-box">
-            <span class="auth-emoji">${targetRole === 'admin' ? '👑' : '⚡'}</span>
-            <h4 class="auth-role-heading">${roleTitle} Mode</h4>
-            <p class="sub-text">${isLeaderAuth ? 'Enter your Leader Student ID and Leader Passcode to access your assigned lab group.' : 'Enter admin passcode password to authenticate session.'}</p>
-          </div>
+        <h3 class="login-title-heading">${roleTitle}</h3>
 
+        <form id="password-auth-form">
           ${isLeaderAuth ? `
-            <div class="form-group mt-3">
-              <label class="form-label">Appointed Leader Student ID / Reg No.:</label>
-              <input type="text" id="auth-st-id-input" class="form-input" required placeholder="Enter Registration No..." autofocus>
+            <div class="login-form-group">
+              <span class="login-input-icon">✉️</span>
+              <input type="text" id="auth-st-id-input" class="login-underline-input" required placeholder="Registration ID (e.g. EG/2023/5999)" autofocus>
             </div>
           ` : ''}
 
-          <div class="form-group mt-3">
-            <label class="form-label">Enter Passcode:</label>
-            <input type="password" id="auth-passcode-input" class="form-input" required placeholder="Enter password..." ${!isLeaderAuth ? 'autofocus' : ''}>
+          <div class="login-form-group">
+            <span class="login-input-icon">🔒</span>
+            <input type="password" id="auth-passcode-input" class="login-underline-input" required placeholder="Password" ${!isLeaderAuth ? 'autofocus' : ''}>
           </div>
 
-          <div id="auth-error-msg" class="auth-error-text text-rose font-sm mt-2 hidden"></div>
+          <div id="auth-error-msg" class="auth-error-text font-sm mb-3 hidden" style="color: #fff; background: rgba(225, 29, 72, 0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
 
-          <div class="modal-footer mt-4">
-            <button type="button" class="btn btn-outline modal-cancel-btn">Cancel</button>
-            <button type="submit" class="btn ${targetRole === 'admin' ? 'btn-primary' : 'btn-emerald'}">
-              🔓 Verify & Unlock Access
-            </button>
-          </div>
+          <button type="submit" class="login-submit-btn">
+            LOGIN
+          </button>
         </form>
       </div>
     </div>
   `;
 
   const closeBtn = modalContainer.querySelector('.modal-close-btn');
-  const cancelBtn = modalContainer.querySelector('.modal-cancel-btn');
   const errorMsg = modalContainer.querySelector('#auth-error-msg');
   const passInput = modalContainer.querySelector('#auth-passcode-input');
   const stIdInput = modalContainer.querySelector('#auth-st-id-input');
 
   const closeModal = () => modalContainer.innerHTML = '';
-  closeBtn.addEventListener('click', closeModal);
-  cancelBtn.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
   const form = modalContainer.querySelector('#password-auth-form');
   form.addEventListener('submit', (e) => {
@@ -74,9 +66,10 @@ export function openPasswordModal(targetRole, targetGroup = 'CE01') {
       showToast(res.message || `Authenticated as ${roleTitle}! Access granted.`, 'success');
       closeModal();
     } else {
-      errorMsg.textContent = res.message || '❌ Incorrect passcode! Access denied.';
+      errorMsg.textContent = res.message || 'Invalid credentials!';
       errorMsg.classList.remove('hidden');
       passInput.value = '';
+      passInput.focus();
     }
   });
 }
