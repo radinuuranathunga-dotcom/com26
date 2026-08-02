@@ -880,21 +880,6 @@ class Store {
           this.notify();
         }
       });
-      
-      // Real-time auto-sync ticker (every 10 seconds) to guarantee student stats update
-      setInterval(() => {
-        try {
-          const savedStr = localStorage.getItem(STORAGE_KEY);
-          if (savedStr) {
-            const parsed = JSON.parse(savedStr);
-            if (parsed && JSON.stringify(parsed) !== JSON.stringify(this.data)) {
-              this.data = parsed;
-              this.recalculateStudentStats();
-              this.notify();
-            }
-          }
-        } catch (e) {}
-      }, 10000);
     }
   }
 
@@ -1050,8 +1035,13 @@ class Store {
   }
 
   notify() {
-    this.saveData();
-    this.listeners.forEach(listener => listener(this.data));
+    if (this._notifyTimer) {
+      clearTimeout(this._notifyTimer);
+    }
+    this._notifyTimer = setTimeout(() => {
+      this.saveData();
+      this.listeners.forEach(listener => listener(this.data));
+    }, 50);
   }
 
   // --- Password Authentication Methods ---
@@ -2526,10 +2516,16 @@ function openDeleteConfirmModal(message, onConfirm) {
 function renderDashboardView(container) {
   const role = store.currentRole;
   const isAdmin = role === 'admin';
-  const groups = store.data.labGroups;
-  const students = store.data.students;
-  const labs = store.data.labs;
-  const courses = store.data.courses;
+  const groups = store.labGroups;
+  const students = store.students;
+  const labs = store.labs;
+  const courses = store.courses;
+
+  // Pre-compute student counts per lab group for high-performance rendering
+  const groupCountMap = {};
+  students.forEach(s => {
+    if (s.labGroup) groupCountMap[s.labGroup] = (groupCountMap[s.labGroup] || 0) + 1;
+  });
 
   container.innerHTML = `
     <div class="view-header">
@@ -2615,13 +2611,13 @@ function renderDashboardView(container) {
             </thead>
             <tbody>
               ${groups.map(g => {
-                const groupStudents = students.filter(s => s.labGroup === g.id);
+                const count = groupCountMap[g.id] || 0;
                 return `
                   <tr>
                     <td><span class="group-tag">${g.id}</span></td>
                     <td><span class="font-bold text-cyan">${g.leaderName}</span></td>
                     <td class="font-mono text-muted">${g.leaderId || 'N/A'}</td>
-                    <td>${groupStudents.length} Students</td>
+                    <td>${count} Students</td>
                     ${isAdmin ? `
                       <td>
                         <button class="btn btn-xs btn-outline-cyan edit-dash-group-btn" data-id="${g.id}">
@@ -2639,7 +2635,7 @@ function renderDashboardView(container) {
         <!-- Mobile Expandable Cards List (Visible on Mobile Screens) -->
         <div class="mobile-groups-card-list mt-3">
           ${groups.map(g => {
-            const groupStudents = students.filter(s => s.labGroup === g.id);
+            const count = groupCountMap[g.id] || 0;
             return `
               <div class="mobile-group-card">
                 <div class="mobile-group-card-header">
@@ -2648,7 +2644,7 @@ function renderDashboardView(container) {
                     <span class="font-bold text-cyan ml-2">${g.leaderName}</span>
                   </div>
                   <div class="mobile-group-info-right">
-                    <span class="badge badge-success">${groupStudents.length} Students</span>
+                    <span class="badge badge-success">${count} Students</span>
                     <span class="accordion-chevron">▼</span>
                   </div>
                 </div>
@@ -2659,7 +2655,7 @@ function renderDashboardView(container) {
                   </div>
                   <div class="mobile-detail-row">
                     <span class="mobile-detail-label">Roster Count:</span>
-                    <span class="font-bold">${groupStudents.length} Assigned Students</span>
+                    <span class="font-bold">${count} Assigned Students</span>
                   </div>
                   ${isAdmin ? `
                     <div class="mobile-card-actions mt-2">

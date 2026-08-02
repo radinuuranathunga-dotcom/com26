@@ -51,21 +51,6 @@ class Store {
           this.notify();
         }
       });
-      
-      // Real-time auto-sync ticker (every 10 seconds) to guarantee student stats update
-      setInterval(() => {
-        try {
-          const savedStr = localStorage.getItem(STORAGE_KEY);
-          if (savedStr) {
-            const parsed = JSON.parse(savedStr);
-            if (parsed && JSON.stringify(parsed) !== JSON.stringify(this.data)) {
-              this.data = parsed;
-              this.recalculateStudentStats();
-              this.notify();
-            }
-          }
-        } catch (e) {}
-      }, 10000);
     }
   }
 
@@ -221,8 +206,13 @@ class Store {
   }
 
   notify() {
-    this.saveData();
-    this.listeners.forEach(listener => listener(this.data));
+    if (this._notifyTimer) {
+      clearTimeout(this._notifyTimer);
+    }
+    this._notifyTimer = setTimeout(() => {
+      this.saveData();
+      this.listeners.forEach(listener => listener(this.data));
+    }, 50);
   }
 
   // --- Password Authentication Methods ---
