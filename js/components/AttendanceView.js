@@ -21,7 +21,6 @@ export function renderAttendanceView(container) {
   // Selected state
   let selectedGroup = store.activeLeaderGroup || (groups.length > 0 ? groups[0].id : 'CE01');
   let selectedLabId = labs.length > 0 ? labs[0].id : '';
-  let selectedDate = new Date().toISOString().slice(0, 10);
 
   // In-memory draft attendance records for batch editing
   let draftRecords = {};
@@ -29,7 +28,7 @@ export function renderAttendanceView(container) {
   function initDraftRecords() {
     const students = store.getStudentsByGroup(selectedGroup);
     const existingLog = store.data.attendanceLogs.find(
-      l => l.labId === selectedLabId && l.group === selectedGroup && l.date === selectedDate
+      l => l.labId === selectedLabId && l.group === selectedGroup
     );
 
     draftRecords = {};
@@ -102,7 +101,7 @@ export function renderAttendanceView(container) {
         </div>
       ` : ''}
 
-      <!-- Group Leader & Session Config Card -->
+      <!-- Particular Lab Experiment Config Card -->
       <div class="card session-config-card">
         <div class="config-grid">
           <div class="config-field">
@@ -120,23 +119,25 @@ export function renderAttendanceView(container) {
             ${isLeaderAuthorized ? `<span class="sub-text text-amber mt-1">🔒 Group Isolated: Locked to your assigned group (${selectedGroup})</span>` : ''}
           </div>
 
-          <div class="config-field">
+          <div class="config-field" style="grid-column: span 2;">
             <div class="field-header-row">
-              <label class="form-label">Lab Course Session:</label>
+              <label class="form-label">Select Particular Practical Lab Experiment:</label>
               ${isAdmin ? `<button id="edit-current-lab-btn" class="btn-icon btn-xs text-cyan" title="Edit Lab Course Session">✏️ Edit Session</button>` : ''}
             </div>
-            <select id="attendance-lab-select" class="form-select">
-              ${labs.map(l => `
-                <option value="${l.id}" ${l.id === selectedLabId ? 'selected' : ''}>
-                  ${l.courseCode} ${l.labNumber || ''}: ${l.labTitle || l.labName} (${l.coordinator || l.venue || 'Communication Laboratory'})
-                </option>
-              `).join('')}
+            <select id="attendance-lab-select" class="form-select font-bold text-cyan" style="font-size: 0.95rem;">
+              ${store.data.courses.map(course => {
+                const courseLabs = labs.filter(l => l.courseCode === course.code || (l.courseCode && l.courseCode.includes(course.code)));
+                return `
+                  <optgroup label="${course.code}: ${course.name}">
+                    ${courseLabs.map(l => `
+                      <option value="${l.id}" ${l.id === selectedLabId ? 'selected' : ''}>
+                        ${l.labNumber || 'Lab'}: ${l.labTitle || l.labName} (${l.coordinator || l.venue || 'Communication Lab'})
+                      </option>
+                    `).join('')}
+                  </optgroup>
+                `;
+              }).join('')}
             </select>
-          </div>
-
-          <div class="config-field">
-            <label class="form-label">Session Date:</label>
-            <input type="date" id="attendance-date-input" class="form-input" value="${selectedDate}">
           </div>
 
           <div class="config-field leader-badge-box">
@@ -148,6 +149,20 @@ export function renderAttendanceView(container) {
             </div>
           </div>
         </div>
+
+        <!-- Particular Selected Experiment Info Banner -->
+        ${selectedLab ? `
+          <div class="mt-3 pad-sm" style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <span class="badge badge-cyan font-mono">${selectedLab.labNumber || 'Lab Experiment'}</span>
+              <strong class="text-cyan ml-2 font-md">${selectedLab.courseCode}: ${selectedLab.labTitle || selectedLab.labName}</strong>
+              <p class="font-xs text-muted mb-0 mt-1">Module: <strong>${selectedLab.courseName || selectedLab.courseCode}</strong> | Venue / Coordinator: <strong>${selectedLab.coordinator || selectedLab.venue || 'Communication Laboratory'}</strong> | Group Enrolled: <strong>195 Students (${selectedGroup})</strong></p>
+            </div>
+            <div class="text-emerald font-bold font-xs" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 20px;">
+              🎯 Particular Experiment Register
+            </div>
+          </div>
+        ` : ''}
       </div>
 
       <!-- Live Summary Bar -->
@@ -406,15 +421,15 @@ export function renderAttendanceView(container) {
 
           const logEntry = {
             labId: selectedLabId,
-            labName: selectedLab ? `${selectedLab.courseCode}: ${selectedLab.labName}` : 'Lab Practical',
+            labName: selectedLab ? `${selectedLab.courseCode} ${selectedLab.labNumber || ''}: ${selectedLab.labTitle || selectedLab.labName}` : 'Lab Practical',
             group: selectedGroup,
-            date: selectedDate,
+            date: new Date().toISOString().slice(0, 10),
             updatedByLeader: `${leaderName} (Leader ${selectedGroup})`,
             records: draftRecords
           };
 
           store.saveLabAttendance(logEntry);
-          showToast(`Saved attendance register for ${selectedGroup} (${selectedDate})!`, 'success');
+          showToast(`Saved attendance register for ${selectedLab ? (selectedLab.labTitle || selectedLab.labName) : 'Lab'} (${selectedGroup})!`, 'success');
         });
       }
     }
@@ -428,9 +443,8 @@ export function renderAttendanceView(container) {
         const leaderName = currentGroupInfo ? currentGroupInfo.leaderName : 'Group Leader';
 
         const mockLog = {
-          labName: selectedLab ? `${selectedLab.courseCode}: ${selectedLab.labName}` : 'Lab Practical',
+          labName: selectedLab ? `${selectedLab.courseCode} ${selectedLab.labNumber || ''}: ${selectedLab.labTitle || selectedLab.labName}` : 'Lab Practical',
           group: selectedGroup,
-          date: selectedDate,
           updatedByLeader: `${leaderName} (Leader ${selectedGroup})`,
           totalPresent: presentCount,
           totalAbsent: absentCount,

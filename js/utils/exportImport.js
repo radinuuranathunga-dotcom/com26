@@ -45,7 +45,7 @@ export function exportAttendanceLogCsv(logEntry, students) {
   students.forEach(s => studentMap[s.id] = s.name);
 
   let csv = `Lab Attendance Register - ${logEntry.labName}\n`;
-  csv += `Date: ${logEntry.date}, Group: ${logEntry.group}, Recorded By: ${logEntry.updatedByLeader}\n`;
+  csv += `Group: ${logEntry.group}, Recorded By: ${logEntry.updatedByLeader}\n`;
   csv += `Present: ${logEntry.totalPresent}, Absent: ${logEntry.totalAbsent}, Late: ${logEntry.totalLate}\n\n`;
   csv += 'Student ID,Student Name,Status,Task Notes\n';
 
@@ -57,7 +57,7 @@ export function exportAttendanceLogCsv(logEntry, students) {
     });
   }
 
-  downloadCsv(`Lab_Attendance_${logEntry.group}_${logEntry.date}.csv`, csv);
+  downloadCsv(`Lab_Attendance_${logEntry.group}_${(logEntry.labName || 'Lab').replace(/[^a-zA-Z0-9_-]/g, '_')}.csv`, csv);
 }
 
 // Backup full store to JSON

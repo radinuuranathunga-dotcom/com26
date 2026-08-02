@@ -279,8 +279,9 @@ class Store {
     logEntry.totalAbsent = absentCount;
     logEntry.totalLate = lateCount;
 
+    // Match attendance register by Particular Lab Experiment and Lab Group
     const existingIndex = this.data.attendanceLogs.findIndex(
-      l => l.labId === logEntry.labId && l.group === logEntry.group && l.date === logEntry.date
+      l => l.labId === logEntry.labId && l.group === logEntry.group
     );
 
     if (existingIndex !== -1) {
@@ -295,27 +296,26 @@ class Store {
   }
 
   recalculateStudentStats() {
-    const studentLogsMap = {};
+    const totalLabsAvailable = this.data.labs.length || 11;
+    const studentCompletedLabsMap = {};
 
     this.data.attendanceLogs.forEach(log => {
       if (!log.records) return;
       Object.keys(log.records).forEach(stId => {
-        if (!studentLogsMap[stId]) {
-          studentLogsMap[stId] = { attended: 0, total: 0 };
+        if (!studentCompletedLabsMap[stId]) {
+          studentCompletedLabsMap[stId] = new Set();
         }
         const rec = log.records[stId];
-        studentLogsMap[stId].total++;
         if (rec.status === 'Present' || rec.status === 'Late') {
-          studentLogsMap[stId].attended++;
+          studentCompletedLabsMap[stId].add(log.labId);
         }
       });
     });
 
     this.data.students.forEach(student => {
-      const stats = studentLogsMap[student.id];
-      if (stats && stats.total > 0) {
-        student.labsCompleted = stats.attended;
-      }
+      student.totalLabs = totalLabsAvailable;
+      const completedSet = studentCompletedLabsMap[student.id];
+      student.labsCompleted = completedSet ? completedSet.size : 0;
     });
   }
 
