@@ -187,13 +187,143 @@ export function openEditLabGroupModal(group) {
   });
 }
 
-export function openScheduleModal(itemType, existingItem = null) {
+// Add or Edit Academic Course Module Modal (Admin only)
+export function openCourseModal(existingCourse = null) {
+  if (store.currentRole !== 'admin') {
+    showToast("🔒 Security Restriction: Only Department Admins can manage Course Modules!", "warning");
+    return;
+  }
+
+  const modalContainer = document.getElementById('modal-portal');
+  if (!modalContainer) return;
+
+  const isEdit = !!existingCourse;
+
+  modalContainer.innerHTML = `
+    <div class="modal-backdrop animate-fade-in">
+      <div class="modal-card animate-scale-up">
+        <div class="modal-header">
+          <h3>${isEdit ? '✏️ Edit' : '➕ Add New'} Academic Module</h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+
+        <form id="course-module-form" class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Module / Course Code:</label>
+              <input type="text" id="course-code" class="form-input" required 
+                     value="${escapeHtml(existingCourse ? existingCourse.code : '')}"
+                     placeholder="e.g. EC3301" ${isEdit ? 'readonly style="opacity:0.75;"' : 'autofocus'}>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Module Title / Course Name:</label>
+              <input type="text" id="course-name" class="form-input" required 
+                     value="${escapeHtml(existingCourse ? existingCourse.name : '')}"
+                     placeholder="e.g. Analog Electronics">
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Module Coordinator / Lecturer / Venue:</label>
+              <input type="text" id="course-prof" class="form-input" required 
+                     value="${escapeHtml(existingCourse ? (existingCourse.professor || 'Communication Laboratory Staff') : 'Communication Laboratory Staff')}"
+                     placeholder="e.g. Communication Laboratory Staff">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Enrolled Students Count:</label>
+              <input type="number" id="course-enrolled" class="form-input" required 
+                     value="${existingCourse ? (existingCourse.enrolledCount || 195) : 195}">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Credits:</label>
+              <input type="number" id="course-credits" class="form-input" required 
+                     value="${existingCourse ? (existingCourse.credits || 3) : 3}">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Academic Year:</label>
+              <select id="course-year" class="form-select">
+                <option value="1" ${existingCourse && existingCourse.year === 1 ? 'selected' : ''}>Year 1</option>
+                <option value="2" ${!existingCourse || existingCourse.year === 2 ? 'selected' : ''}>Year 2</option>
+                <option value="3" ${existingCourse && existingCourse.year === 3 ? 'selected' : ''}>Year 3</option>
+                <option value="4" ${existingCourse && existingCourse.year === 4 ? 'selected' : ''}>Year 4</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Semester:</label>
+              <select id="course-semester" class="form-select">
+                ${[1, 2, 3, 4, 5, 6, 7, 8].map(s => `
+                  <option value="${s}" ${(!existingCourse && s === 3) || (existingCourse && existingCourse.semester === s) ? 'selected' : ''}>Semester ${s}</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline modal-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              💾 ${isEdit ? 'Save Module Changes' : 'Create Module'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const closeBtn = modalContainer.querySelector('.modal-close-btn');
+  const cancelBtn = modalContainer.querySelector('.modal-cancel-btn');
+  const closeModal = () => modalContainer.innerHTML = '';
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+
+  const form = modalContainer.querySelector('#course-module-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const courseObj = {
+      code: document.getElementById('course-code').value.trim().toUpperCase(),
+      name: document.getElementById('course-name').value.trim(),
+      professor: document.getElementById('course-prof').value.trim(),
+      enrolledCount: parseInt(document.getElementById('course-enrolled').value, 10) || 195,
+      credits: parseInt(document.getElementById('course-credits').value, 10) || 3,
+      year: parseInt(document.getElementById('course-year').value, 10) || 2,
+      semester: parseInt(document.getElementById('course-semester').value, 10) || 3,
+      labsCount: existingCourse ? existingCourse.labsCount : 0
+    };
+
+    if (isEdit) {
+      const res = store.updateCourse(courseObj);
+      if (res.success) {
+        showToast(`Module "${courseObj.code}: ${courseObj.name}" updated!`, 'success');
+        closeModal();
+      } else {
+        showToast(res.message || 'Failed to update module', 'error');
+      }
+    } else {
+      const res = store.addCourse(courseObj);
+      if (res.success) {
+        showToast(`New Module "${courseObj.code}: ${courseObj.name}" created successfully!`, 'success');
+        closeModal();
+      } else {
+        showToast(res.message || 'Failed to create module', 'error');
+      }
+    }
+  });
+}
+
+export function openScheduleModal(itemType, existingItem = null, preselectedCourseCode = null) {
   const isEdit = !!existingItem;
   const modalContainer = document.getElementById('modal-portal');
   if (!modalContainer) return;
 
   const courses = store.data.courses;
   const groups = store.data.labGroups;
+
+  // Determine initial selected course code
+  const initialCourseCode = existingItem ? existingItem.courseCode : (preselectedCourseCode || '');
+  const initialCourse = courses.find(c => c.code === initialCourseCode);
 
   modalContainer.innerHTML = `
     <div class="modal-backdrop animate-fade-in">
@@ -206,18 +336,33 @@ export function openScheduleModal(itemType, existingItem = null) {
         <form id="schedule-form" class="modal-body">
           <div class="form-grid">
             
+            <div class="form-group full-width" style="background: rgba(6, 182, 212, 0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(6, 182, 212, 0.2);">
+              <label class="form-label text-cyan" style="font-weight: 700;">📚 Select Semester Module:</label>
+              <select id="modal-course-select" class="form-select">
+                <option value="">-- Choose from Department Managed Modules --</option>
+                ${courses.map(c => {
+                  const isSel = (c.code === initialCourseCode);
+                  return `<option value="${c.code}" data-name="${escapeHtml(c.name)}" data-prof="${escapeHtml(c.professor || '')}" ${isSel ? 'selected' : ''}>
+                    ${c.code} - ${escapeHtml(c.name)} (${c.professor || 'Comm Lab'})
+                  </option>`;
+                }).join('')}
+                <option value="custom" ${existingItem && !courses.some(c => c.code === existingItem.courseCode) ? 'selected' : ''}>➕ Enter Custom / Manual Module Code</option>
+              </select>
+              <span class="sub-text text-muted mt-1 font-xs">Selecting a module from the list automatically populates the Course Code and Title below.</span>
+            </div>
+
             <div class="form-group full-width">
               <label class="form-label">${itemType === 'lecture' ? 'Course Title' : 'Lab Session Title'}:</label>
               <input type="text" id="modal-title" class="form-input" required 
-                     value="${escapeHtml(existingItem ? (itemType === 'lecture' ? existingItem.courseName : existingItem.labName) : '')}"
-                     placeholder="e.g. Digital Logic & Computer Design">
+                     value="${escapeHtml(existingItem ? (itemType === 'lecture' ? existingItem.courseName : existingItem.labName) : (initialCourse ? initialCourse.name : ''))}"
+                     placeholder="e.g. Analog Electronics / Semiconductor Diodes">
             </div>
 
             <div class="form-group">
               <label class="form-label">Course Code:</label>
               <input type="text" id="modal-code" class="form-input" required 
-                     value="${escapeHtml(existingItem ? existingItem.courseCode : '')}"
-                     placeholder="e.g. CE101">
+                     value="${escapeHtml(initialCourseCode)}"
+                     placeholder="e.g. EC3301">
             </div>
 
             <div class="form-group">
@@ -328,6 +473,35 @@ export function openScheduleModal(itemType, existingItem = null) {
   const closeModal = () => modalContainer.innerHTML = '';
   closeBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
+
+  const courseSelect = modalContainer.querySelector('#modal-course-select');
+  if (courseSelect) {
+    courseSelect.addEventListener('change', (e) => {
+      const selectedVal = e.target.value;
+      if (selectedVal && selectedVal !== 'custom') {
+        const matched = store.data.courses.find(c => c.code === selectedVal);
+        if (matched) {
+          const codeInput = modalContainer.querySelector('#modal-code');
+          const titleInput = modalContainer.querySelector('#modal-title');
+          const instructorInput = modalContainer.querySelector('#modal-instructor');
+          
+          if (codeInput) codeInput.value = matched.code;
+          if (titleInput) {
+            if (itemType === 'lecture') {
+              titleInput.value = matched.name;
+            } else {
+              if (!titleInput.value || titleInput.value.startsWith('Lab') || store.data.courses.some(c => c.name === titleInput.value)) {
+                titleInput.value = matched.name;
+              }
+            }
+          }
+          if (instructorInput && matched.professor && (!instructorInput.value || instructorInput.value === 'Communication Laboratory Staff')) {
+            instructorInput.value = matched.professor;
+          }
+        }
+      }
+    });
+  }
 
   const form = modalContainer.querySelector('#schedule-form');
   form.addEventListener('submit', (e) => {

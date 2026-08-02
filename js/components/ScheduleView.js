@@ -3,7 +3,7 @@
  */
 import { store } from '../store.js';
 import { DAYS_OF_WEEK, formatTime } from '../utils/helpers.js';
-import { openScheduleModal, openDeleteConfirmModal } from './ModalManager.js';
+import { openScheduleModal, openDeleteConfirmModal, openCourseModal } from './ModalManager.js';
 
 export function renderScheduleView(container) {
   const role = store.currentRole;
@@ -56,6 +56,9 @@ export function renderScheduleView(container) {
 
         <div class="view-header-right">
           ${role === 'admin' ? `
+            <button id="add-course-btn-top" class="btn btn-outline-cyan">
+              <span>📚</span> Add New Module
+            </button>
             <button id="add-lecture-btn" class="btn btn-primary">
               <span>➕</span> Add Lecture Slot
             </button>
@@ -202,15 +205,20 @@ export function renderScheduleView(container) {
 
       <!-- Official Computer Engineering Laboratory Experiments Table -->
       <div class="card official-labs-card mt-4 pad-md animate-fade-in">
-        <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div>
             <h3>🔬 Specialization: Computer Engineering - Practical Laboratory Modules</h3>
-            <p class="sub-text">Official Computer Engineering Department Laboratory Experiments (EC3301, EC3203, EC3305)</p>
+            <p class="sub-text">Official Computer Engineering Department Laboratory Experiments (${store.data.courses.map(c => c.code).join(', ')})</p>
           </div>
           ${role === 'admin' ? `
-            <button id="add-official-lab-btn" class="btn btn-emerald">
-              ➕ Add New Lab Session (Admin Only)
-            </button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button id="add-course-btn" class="btn btn-primary">
+                ➕ Add New Module (Admin Only)
+              </button>
+              <button id="add-official-lab-btn" class="btn btn-emerald">
+                ⚡ Add New Lab Session (Admin Only)
+              </button>
+            </div>
           ` : `
             <span class="badge badge-secondary">🔒 Admin Editing Only</span>
           `}
@@ -220,12 +228,25 @@ export function renderScheduleView(container) {
           const courseLabs = labs.filter(l => l.courseCode === course.code || (l.courseCode && l.courseCode.includes(course.code)));
           return `
             <div class="module-labs-block mt-4 pad-sm" style="border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; background: rgba(0,0,0,0.15);">
-              <div class="module-header-row" style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 182, 212, 0.12); padding: 10px 16px; border-radius: 8px; margin-bottom: 12px;">
+              <div class="module-header-row" style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 182, 212, 0.12); padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                 <div>
                   <strong class="text-cyan font-md" style="font-size: 1.05rem;">${course.code} ${course.name}</strong>
-                  <span class="sub-text ml-3 font-xs text-muted">Module Coordinator / Venue: Communication Laboratory | Enrolled: 195 Students</span>
+                  <span class="sub-text ml-3 font-xs text-muted">Module Coordinator / Venue: ${course.professor || 'Communication Laboratory'} | Enrolled: ${course.enrolledCount || 195} Students</span>
                 </div>
-                <span class="badge badge-emerald">${courseLabs.length} Experiments</span>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <span class="badge badge-emerald">${courseLabs.length} Experiments</span>
+                  ${role === 'admin' ? `
+                    <button class="btn btn-xs btn-outline-amber edit-course-btn" data-code="${course.code}">
+                      ✏️ Edit Module
+                    </button>
+                    <button class="btn btn-xs btn-outline-rose delete-course-btn" data-code="${course.code}">
+                      🗑️ Remove Module
+                    </button>
+                    <button class="btn btn-xs btn-emerald add-module-lab-btn" data-code="${course.code}">
+                      ➕ Add Lab Session
+                    </button>
+                  ` : ''}
+                </div>
               </div>
 
               <div class="table-responsive">
@@ -304,6 +325,49 @@ export function renderScheduleView(container) {
         render();
       });
     }
+
+    // Admin Module (Course) Handlers
+    const addCourseTopBtn = container.querySelector('#add-course-btn-top');
+    if (addCourseTopBtn) {
+      addCourseTopBtn.addEventListener('click', () => {
+        openCourseModal(null);
+      });
+    }
+
+    const addCourseBtn = container.querySelector('#add-course-btn');
+    if (addCourseBtn) {
+      addCourseBtn.addEventListener('click', () => {
+        openCourseModal(null);
+      });
+    }
+
+    container.querySelectorAll('.edit-course-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = store.data.courses.find(c => c.code === btn.dataset.code);
+        if (item) openCourseModal(item);
+      });
+    });
+
+    container.querySelectorAll('.delete-course-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const code = btn.dataset.code;
+        const item = store.data.courses.find(c => c.code === code);
+        if (item) {
+          openDeleteConfirmModal(`Remove Academic Module "${item.code}: ${item.name}" from semester curriculum?`, () => {
+            store.deleteCourse(item.code);
+          });
+        }
+      });
+    });
+
+    container.querySelectorAll('.add-module-lab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openScheduleModal('lab', null, btn.dataset.code);
+      });
+    });
 
     // Admin add buttons
     const addLecBtn = container.querySelector('#add-lecture-btn');

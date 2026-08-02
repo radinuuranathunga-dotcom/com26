@@ -144,7 +144,7 @@ export function renderAttendanceView(container) {
             <span class="stat-icon text-amber">🧪</span>
           </div>
           <div class="stat-number text-amber">${allLabs.length} Labs</div>
-          <div class="sub-text font-xs">EC3301, EC3203 & EC3305 Modules</div>
+          <div class="sub-text font-xs">${store.data.courses.map(c => c.code).join(', ')} Modules</div>
         </div>
       </div>
 

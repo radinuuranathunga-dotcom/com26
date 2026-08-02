@@ -833,6 +833,10 @@ class Store {
             parsed.lectures = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.lectures));
             this.saveData(parsed);
           }
+          if (!parsed.courses || !Array.isArray(parsed.courses) || parsed.courses.length === 0) {
+            parsed.courses = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.courses));
+            this.saveData(parsed);
+          }
           return parsed;
         }
       }
@@ -1002,6 +1006,38 @@ class Store {
     this.data.labGroups.push(newGroup);
     this.notify();
     return newGroup;
+  }
+
+  // --- Course / Module Management ---
+  addCourse(course) {
+    const cleanCode = course.code.trim().toUpperCase();
+    const exists = this.data.courses.some(c => c.code.toUpperCase() === cleanCode);
+    if (exists) {
+      return { success: false, message: `Module with code "${cleanCode}" already exists!` };
+    }
+    course.code = cleanCode;
+    course.labsCount = course.labsCount || 0;
+    this.data.courses.push(course);
+    this.notify();
+    return { success: true, course };
+  }
+
+  updateCourse(updatedCourse) {
+    const cleanCode = updatedCourse.code.trim().toUpperCase();
+    const index = this.data.courses.findIndex(c => c.code.toUpperCase() === cleanCode);
+    if (index !== -1) {
+      this.data.courses[index] = { ...this.data.courses[index], ...updatedCourse, code: cleanCode };
+      this.notify();
+      return { success: true };
+    }
+    return { success: false, message: `Module "${cleanCode}" not found!` };
+  }
+
+  deleteCourse(code) {
+    const cleanCode = code.trim().toUpperCase();
+    this.data.courses = this.data.courses.filter(c => c.code.toUpperCase() !== cleanCode);
+    this.notify();
+    return { success: true };
   }
 
   // --- Schedule Editing (Lectures & Labs) ---
@@ -1200,6 +1236,175 @@ class Store {
 const store = new Store();
 
 
+// --- File: js/components/Navbar.js ---
+/**
+ * Navbar.js - Header Bar with Role Switcher, Password Auth & Theme Toggle
+ */
+function renderNavbar(container) {
+  const role = store.currentRole;
+  const activeView = store.activeView;
+  const theme = store.currentTheme;
+  const activeGroup = store.activeLeaderGroup;
+  const auth = store.authenticatedRoles;
+
+  const groups = store.data.labGroups;
+
+  container.innerHTML = `
+    <header class="navbar">
+      <div class="navbar-left">
+        <div class="brand">
+          <div class="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/>
+              <path d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/>
+              <path d="M6 9h12"/>
+              <path d="M6 15h12"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">CompEng Academic Hub</span>
+            <span class="brand-subtitle">Computer Engineering Department</span>
+          </div>
+        </div>
+
+        <nav class="nav-tabs">
+          <button class="nav-tab ${activeView === 'dashboard' ? 'active' : ''}" data-view="dashboard">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            Dashboard
+          </button>
+          
+          <button class="nav-tab ${activeView === 'schedule' ? 'active' : ''}" data-view="schedule">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schedules ${role === 'admin' ? '<span class="tab-badge">Editable</span>' : ''}
+          </button>
+
+          <button class="nav-tab ${activeView === 'attendance' ? 'active' : ''}" data-view="attendance">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Lab Attendance
+            ${role === 'leader' ? '<span class="tab-badge highlight">Leader Mode</span>' : ''}
+          </button>
+
+          <button class="nav-tab ${activeView === 'students' ? 'active' : ''}" data-view="students">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Students (200)
+          </button>
+        </nav>
+      </div>
+
+      <div class="navbar-right">
+        <!-- Role Password Selector -->
+        <div class="role-selector-container">
+          <label class="role-label">System Access Mode:</label>
+          <div class="role-pill-group">
+            
+            <button class="role-btn ${role === 'admin' ? 'active' : ''}" data-role="admin" title="Admin / Faculty: Manage Schedules & Data Only (Password Required)">
+              ${auth.admin ? '🔓' : '🔒'} Admin (Data Entry)
+            </button>
+
+            <button class="role-btn ${role === 'leader' ? 'active' : ''}" data-role="leader" title="Lab Group Leader: Mark Attendance Only (Password Required)">
+              ${auth.leader ? '🔓' : '🔒'} Group Leader (Mark Attendance)
+            </button>
+
+            <button class="role-btn ${role === 'student' ? 'active' : ''}" data-role="student" title="Student View: Public Read-Only Timetables">
+              🎓 Student View
+            </button>
+
+          </div>
+        </div>
+
+        ${role === 'leader' ? `
+          <div class="leader-group-select-wrapper animate-fade-in" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); padding: 4px 12px; border-radius: 20px;">
+            <span class="leader-icon">⚡</span>
+            <span class="font-bold text-cyan font-sm">Leader: ${activeGroup} (${groups.find(g => g.id === activeGroup)?.leaderName || 'Leader'})</span>
+          </div>
+        ` : ''}
+
+        ${(auth.admin || auth.leader) ? `
+          <button id="logout-btn" class="btn btn-outline-danger btn-sm" title="Lock session back to Student View">
+            🔒 Lock Session
+          </button>
+        ` : ''}
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Dark/Light Mode">
+          ${theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+
+        <!-- Reset Demo Data -->
+        <button id="reset-data-btn" class="btn btn-outline btn-sm" title="Reset all data to default initial state">
+          🔄 Reset Demo
+        </button>
+      </div>
+    </header>
+  `;
+
+  // Navigation tabs
+  container.querySelectorAll('.nav-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      store.setActiveView(btn.dataset.view);
+    });
+  });
+
+  // Role button clicks with password authentication
+  container.querySelectorAll('.role-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const selectedRole = btn.dataset.role;
+
+      if (selectedRole === 'student') {
+        store.setRole('student');
+        return;
+      }
+
+      // Check if already authenticated for selected role
+      if (store.authenticatedRoles[selectedRole]) {
+        store.setRole(selectedRole);
+        if (selectedRole === 'leader' && store.activeView !== 'attendance') {
+          store.setActiveView('attendance');
+        }
+      } else {
+        // Prompt for password
+        openPasswordModal(selectedRole, store.activeLeaderGroup);
+      }
+    });
+  });
+
+  const leaderSelect = container.querySelector('#navbar-leader-group-select');
+  if (leaderSelect) {
+    leaderSelect.addEventListener('change', (e) => {
+      store.activeLeaderGroup = e.target.value;
+      if (!store.authenticatedRoles.leader) {
+        openPasswordModal('leader', e.target.value);
+      } else {
+        store.setRole('leader', e.target.value);
+      }
+    });
+  }
+
+  const logoutBtn = container.querySelector('#logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      store.logout();
+    });
+  }
+
+  const themeBtn = container.querySelector('#theme-toggle-btn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      store.setTheme(store.currentTheme === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  const resetBtn = container.querySelector('#reset-data-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset all schedules, 200 students, and attendance logs back to the initial demo data?')) {
+        store.resetToDefaults();
+      }
+    });
+  }
+}
+
+
 // --- File: js/components/ModalManager.js ---
 /**
  * ModalManager.js - Dialog & Overlay Portal Manager
@@ -1386,13 +1591,143 @@ function openEditLabGroupModal(group) {
     closeModal();
   });
 }
-function openScheduleModal(itemType, existingItem = null) {
+
+// Add or Edit Academic Course Module Modal (Admin only)
+function openCourseModal(existingCourse = null) {
+  if (store.currentRole !== 'admin') {
+    showToast("🔒 Security Restriction: Only Department Admins can manage Course Modules!", "warning");
+    return;
+  }
+
+  const modalContainer = document.getElementById('modal-portal');
+  if (!modalContainer) return;
+
+  const isEdit = !!existingCourse;
+
+  modalContainer.innerHTML = `
+    <div class="modal-backdrop animate-fade-in">
+      <div class="modal-card animate-scale-up">
+        <div class="modal-header">
+          <h3>${isEdit ? '✏️ Edit' : '➕ Add New'} Academic Module</h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+
+        <form id="course-module-form" class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Module / Course Code:</label>
+              <input type="text" id="course-code" class="form-input" required 
+                     value="${escapeHtml(existingCourse ? existingCourse.code : '')}"
+                     placeholder="e.g. EC3301" ${isEdit ? 'readonly style="opacity:0.75;"' : 'autofocus'}>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Module Title / Course Name:</label>
+              <input type="text" id="course-name" class="form-input" required 
+                     value="${escapeHtml(existingCourse ? existingCourse.name : '')}"
+                     placeholder="e.g. Analog Electronics">
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Module Coordinator / Lecturer / Venue:</label>
+              <input type="text" id="course-prof" class="form-input" required 
+                     value="${escapeHtml(existingCourse ? (existingCourse.professor || 'Communication Laboratory Staff') : 'Communication Laboratory Staff')}"
+                     placeholder="e.g. Communication Laboratory Staff">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Enrolled Students Count:</label>
+              <input type="number" id="course-enrolled" class="form-input" required 
+                     value="${existingCourse ? (existingCourse.enrolledCount || 195) : 195}">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Credits:</label>
+              <input type="number" id="course-credits" class="form-input" required 
+                     value="${existingCourse ? (existingCourse.credits || 3) : 3}">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Academic Year:</label>
+              <select id="course-year" class="form-select">
+                <option value="1" ${existingCourse && existingCourse.year === 1 ? 'selected' : ''}>Year 1</option>
+                <option value="2" ${!existingCourse || existingCourse.year === 2 ? 'selected' : ''}>Year 2</option>
+                <option value="3" ${existingCourse && existingCourse.year === 3 ? 'selected' : ''}>Year 3</option>
+                <option value="4" ${existingCourse && existingCourse.year === 4 ? 'selected' : ''}>Year 4</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Semester:</label>
+              <select id="course-semester" class="form-select">
+                ${[1, 2, 3, 4, 5, 6, 7, 8].map(s => `
+                  <option value="${s}" ${(!existingCourse && s === 3) || (existingCourse && existingCourse.semester === s) ? 'selected' : ''}>Semester ${s}</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline modal-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              💾 ${isEdit ? 'Save Module Changes' : 'Create Module'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const closeBtn = modalContainer.querySelector('.modal-close-btn');
+  const cancelBtn = modalContainer.querySelector('.modal-cancel-btn');
+  const closeModal = () => modalContainer.innerHTML = '';
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+
+  const form = modalContainer.querySelector('#course-module-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const courseObj = {
+      code: document.getElementById('course-code').value.trim().toUpperCase(),
+      name: document.getElementById('course-name').value.trim(),
+      professor: document.getElementById('course-prof').value.trim(),
+      enrolledCount: parseInt(document.getElementById('course-enrolled').value, 10) || 195,
+      credits: parseInt(document.getElementById('course-credits').value, 10) || 3,
+      year: parseInt(document.getElementById('course-year').value, 10) || 2,
+      semester: parseInt(document.getElementById('course-semester').value, 10) || 3,
+      labsCount: existingCourse ? existingCourse.labsCount : 0
+    };
+
+    if (isEdit) {
+      const res = store.updateCourse(courseObj);
+      if (res.success) {
+        showToast(`Module "${courseObj.code}: ${courseObj.name}" updated!`, 'success');
+        closeModal();
+      } else {
+        showToast(res.message || 'Failed to update module', 'error');
+      }
+    } else {
+      const res = store.addCourse(courseObj);
+      if (res.success) {
+        showToast(`New Module "${courseObj.code}: ${courseObj.name}" created successfully!`, 'success');
+        closeModal();
+      } else {
+        showToast(res.message || 'Failed to create module', 'error');
+      }
+    }
+  });
+}
+function openScheduleModal(itemType, existingItem = null, preselectedCourseCode = null) {
   const isEdit = !!existingItem;
   const modalContainer = document.getElementById('modal-portal');
   if (!modalContainer) return;
 
   const courses = store.data.courses;
   const groups = store.data.labGroups;
+
+  // Determine initial selected course code
+  const initialCourseCode = existingItem ? existingItem.courseCode : (preselectedCourseCode || '');
+  const initialCourse = courses.find(c => c.code === initialCourseCode);
 
   modalContainer.innerHTML = `
     <div class="modal-backdrop animate-fade-in">
@@ -1405,18 +1740,33 @@ function openScheduleModal(itemType, existingItem = null) {
         <form id="schedule-form" class="modal-body">
           <div class="form-grid">
             
+            <div class="form-group full-width" style="background: rgba(6, 182, 212, 0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(6, 182, 212, 0.2);">
+              <label class="form-label text-cyan" style="font-weight: 700;">📚 Select Semester Module:</label>
+              <select id="modal-course-select" class="form-select">
+                <option value="">-- Choose from Department Managed Modules --</option>
+                ${courses.map(c => {
+                  const isSel = (c.code === initialCourseCode);
+                  return `<option value="${c.code}" data-name="${escapeHtml(c.name)}" data-prof="${escapeHtml(c.professor || '')}" ${isSel ? 'selected' : ''}>
+                    ${c.code} - ${escapeHtml(c.name)} (${c.professor || 'Comm Lab'})
+                  </option>`;
+                }).join('')}
+                <option value="custom" ${existingItem && !courses.some(c => c.code === existingItem.courseCode) ? 'selected' : ''}>➕ Enter Custom / Manual Module Code</option>
+              </select>
+              <span class="sub-text text-muted mt-1 font-xs">Selecting a module from the list automatically populates the Course Code and Title below.</span>
+            </div>
+
             <div class="form-group full-width">
               <label class="form-label">${itemType === 'lecture' ? 'Course Title' : 'Lab Session Title'}:</label>
               <input type="text" id="modal-title" class="form-input" required 
-                     value="${escapeHtml(existingItem ? (itemType === 'lecture' ? existingItem.courseName : existingItem.labName) : '')}"
-                     placeholder="e.g. Digital Logic & Computer Design">
+                     value="${escapeHtml(existingItem ? (itemType === 'lecture' ? existingItem.courseName : existingItem.labName) : (initialCourse ? initialCourse.name : ''))}"
+                     placeholder="e.g. Analog Electronics / Semiconductor Diodes">
             </div>
 
             <div class="form-group">
               <label class="form-label">Course Code:</label>
               <input type="text" id="modal-code" class="form-input" required 
-                     value="${escapeHtml(existingItem ? existingItem.courseCode : '')}"
-                     placeholder="e.g. CE101">
+                     value="${escapeHtml(initialCourseCode)}"
+                     placeholder="e.g. EC3301">
             </div>
 
             <div class="form-group">
@@ -1527,6 +1877,35 @@ function openScheduleModal(itemType, existingItem = null) {
   const closeModal = () => modalContainer.innerHTML = '';
   closeBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
+
+  const courseSelect = modalContainer.querySelector('#modal-course-select');
+  if (courseSelect) {
+    courseSelect.addEventListener('change', (e) => {
+      const selectedVal = e.target.value;
+      if (selectedVal && selectedVal !== 'custom') {
+        const matched = store.data.courses.find(c => c.code === selectedVal);
+        if (matched) {
+          const codeInput = modalContainer.querySelector('#modal-code');
+          const titleInput = modalContainer.querySelector('#modal-title');
+          const instructorInput = modalContainer.querySelector('#modal-instructor');
+          
+          if (codeInput) codeInput.value = matched.code;
+          if (titleInput) {
+            if (itemType === 'lecture') {
+              titleInput.value = matched.name;
+            } else {
+              if (!titleInput.value || titleInput.value.startsWith('Lab') || store.data.courses.some(c => c.name === titleInput.value)) {
+                titleInput.value = matched.name;
+              }
+            }
+          }
+          if (instructorInput && matched.professor && (!instructorInput.value || instructorInput.value === 'Communication Laboratory Staff')) {
+            instructorInput.value = matched.professor;
+          }
+        }
+      }
+    });
+  }
 
   const form = modalContainer.querySelector('#schedule-form');
   form.addEventListener('submit', (e) => {
@@ -1899,175 +2278,6 @@ function openDeleteConfirmModal(message, onConfirm) {
 }
 
 
-// --- File: js/components/Navbar.js ---
-/**
- * Navbar.js - Header Bar with Role Switcher, Password Auth & Theme Toggle
- */
-function renderNavbar(container) {
-  const role = store.currentRole;
-  const activeView = store.activeView;
-  const theme = store.currentTheme;
-  const activeGroup = store.activeLeaderGroup;
-  const auth = store.authenticatedRoles;
-
-  const groups = store.data.labGroups;
-
-  container.innerHTML = `
-    <header class="navbar">
-      <div class="navbar-left">
-        <div class="brand">
-          <div class="brand-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/>
-              <path d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/>
-              <path d="M6 9h12"/>
-              <path d="M6 15h12"/>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <span class="brand-title">CompEng Academic Hub</span>
-            <span class="brand-subtitle">Computer Engineering Department</span>
-          </div>
-        </div>
-
-        <nav class="nav-tabs">
-          <button class="nav-tab ${activeView === 'dashboard' ? 'active' : ''}" data-view="dashboard">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-            Dashboard
-          </button>
-          
-          <button class="nav-tab ${activeView === 'schedule' ? 'active' : ''}" data-view="schedule">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Schedules ${role === 'admin' ? '<span class="tab-badge">Editable</span>' : ''}
-          </button>
-
-          <button class="nav-tab ${activeView === 'attendance' ? 'active' : ''}" data-view="attendance">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Lab Attendance
-            ${role === 'leader' ? '<span class="tab-badge highlight">Leader Mode</span>' : ''}
-          </button>
-
-          <button class="nav-tab ${activeView === 'students' ? 'active' : ''}" data-view="students">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            Students (200)
-          </button>
-        </nav>
-      </div>
-
-      <div class="navbar-right">
-        <!-- Role Password Selector -->
-        <div class="role-selector-container">
-          <label class="role-label">System Access Mode:</label>
-          <div class="role-pill-group">
-            
-            <button class="role-btn ${role === 'admin' ? 'active' : ''}" data-role="admin" title="Admin / Faculty: Manage Schedules & Data Only (Password Required)">
-              ${auth.admin ? '🔓' : '🔒'} Admin (Data Entry)
-            </button>
-
-            <button class="role-btn ${role === 'leader' ? 'active' : ''}" data-role="leader" title="Lab Group Leader: Mark Attendance Only (Password Required)">
-              ${auth.leader ? '🔓' : '🔒'} Group Leader (Mark Attendance)
-            </button>
-
-            <button class="role-btn ${role === 'student' ? 'active' : ''}" data-role="student" title="Student View: Public Read-Only Timetables">
-              🎓 Student View
-            </button>
-
-          </div>
-        </div>
-
-        ${role === 'leader' ? `
-          <div class="leader-group-select-wrapper animate-fade-in" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); padding: 4px 12px; border-radius: 20px;">
-            <span class="leader-icon">⚡</span>
-            <span class="font-bold text-cyan font-sm">Leader: ${activeGroup} (${groups.find(g => g.id === activeGroup)?.leaderName || 'Leader'})</span>
-          </div>
-        ` : ''}
-
-        ${(auth.admin || auth.leader) ? `
-          <button id="logout-btn" class="btn btn-outline-danger btn-sm" title="Lock session back to Student View">
-            🔒 Lock Session
-          </button>
-        ` : ''}
-
-        <!-- Theme Toggle -->
-        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Dark/Light Mode">
-          ${theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-
-        <!-- Reset Demo Data -->
-        <button id="reset-data-btn" class="btn btn-outline btn-sm" title="Reset all data to default initial state">
-          🔄 Reset Demo
-        </button>
-      </div>
-    </header>
-  `;
-
-  // Navigation tabs
-  container.querySelectorAll('.nav-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      store.setActiveView(btn.dataset.view);
-    });
-  });
-
-  // Role button clicks with password authentication
-  container.querySelectorAll('.role-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const selectedRole = btn.dataset.role;
-
-      if (selectedRole === 'student') {
-        store.setRole('student');
-        return;
-      }
-
-      // Check if already authenticated for selected role
-      if (store.authenticatedRoles[selectedRole]) {
-        store.setRole(selectedRole);
-        if (selectedRole === 'leader' && store.activeView !== 'attendance') {
-          store.setActiveView('attendance');
-        }
-      } else {
-        // Prompt for password
-        openPasswordModal(selectedRole, store.activeLeaderGroup);
-      }
-    });
-  });
-
-  const leaderSelect = container.querySelector('#navbar-leader-group-select');
-  if (leaderSelect) {
-    leaderSelect.addEventListener('change', (e) => {
-      store.activeLeaderGroup = e.target.value;
-      if (!store.authenticatedRoles.leader) {
-        openPasswordModal('leader', e.target.value);
-      } else {
-        store.setRole('leader', e.target.value);
-      }
-    });
-  }
-
-  const logoutBtn = container.querySelector('#logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      store.logout();
-    });
-  }
-
-  const themeBtn = container.querySelector('#theme-toggle-btn');
-  if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
-      store.setTheme(store.currentTheme === 'dark' ? 'light' : 'dark');
-    });
-  }
-
-  const resetBtn = container.querySelector('#reset-data-btn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (confirm('Are you sure you want to reset all schedules, 200 students, and attendance logs back to the initial demo data?')) {
-        store.resetToDefaults();
-      }
-    });
-  }
-}
-
-
 // --- File: js/components/DashboardView.js ---
 /**
  * DashboardView.js - Main Department Overview & Computer Engineering Hub
@@ -2309,6 +2519,9 @@ function renderScheduleView(container) {
 
         <div class="view-header-right">
           ${role === 'admin' ? `
+            <button id="add-course-btn-top" class="btn btn-outline-cyan">
+              <span>📚</span> Add New Module
+            </button>
             <button id="add-lecture-btn" class="btn btn-primary">
               <span>➕</span> Add Lecture Slot
             </button>
@@ -2455,15 +2668,20 @@ function renderScheduleView(container) {
 
       <!-- Official Computer Engineering Laboratory Experiments Table -->
       <div class="card official-labs-card mt-4 pad-md animate-fade-in">
-        <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div>
             <h3>🔬 Specialization: Computer Engineering - Practical Laboratory Modules</h3>
-            <p class="sub-text">Official Computer Engineering Department Laboratory Experiments (EC3301, EC3203, EC3305)</p>
+            <p class="sub-text">Official Computer Engineering Department Laboratory Experiments (${store.data.courses.map(c => c.code).join(', ')})</p>
           </div>
           ${role === 'admin' ? `
-            <button id="add-official-lab-btn" class="btn btn-emerald">
-              ➕ Add New Lab Session (Admin Only)
-            </button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button id="add-course-btn" class="btn btn-primary">
+                ➕ Add New Module (Admin Only)
+              </button>
+              <button id="add-official-lab-btn" class="btn btn-emerald">
+                ⚡ Add New Lab Session (Admin Only)
+              </button>
+            </div>
           ` : `
             <span class="badge badge-secondary">🔒 Admin Editing Only</span>
           `}
@@ -2473,12 +2691,25 @@ function renderScheduleView(container) {
           const courseLabs = labs.filter(l => l.courseCode === course.code || (l.courseCode && l.courseCode.includes(course.code)));
           return `
             <div class="module-labs-block mt-4 pad-sm" style="border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; background: rgba(0,0,0,0.15);">
-              <div class="module-header-row" style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 182, 212, 0.12); padding: 10px 16px; border-radius: 8px; margin-bottom: 12px;">
+              <div class="module-header-row" style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 182, 212, 0.12); padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                 <div>
                   <strong class="text-cyan font-md" style="font-size: 1.05rem;">${course.code} ${course.name}</strong>
-                  <span class="sub-text ml-3 font-xs text-muted">Module Coordinator / Venue: Communication Laboratory | Enrolled: 195 Students</span>
+                  <span class="sub-text ml-3 font-xs text-muted">Module Coordinator / Venue: ${course.professor || 'Communication Laboratory'} | Enrolled: ${course.enrolledCount || 195} Students</span>
                 </div>
-                <span class="badge badge-emerald">${courseLabs.length} Experiments</span>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <span class="badge badge-emerald">${courseLabs.length} Experiments</span>
+                  ${role === 'admin' ? `
+                    <button class="btn btn-xs btn-outline-amber edit-course-btn" data-code="${course.code}">
+                      ✏️ Edit Module
+                    </button>
+                    <button class="btn btn-xs btn-outline-rose delete-course-btn" data-code="${course.code}">
+                      🗑️ Remove Module
+                    </button>
+                    <button class="btn btn-xs btn-emerald add-module-lab-btn" data-code="${course.code}">
+                      ➕ Add Lab Session
+                    </button>
+                  ` : ''}
+                </div>
               </div>
 
               <div class="table-responsive">
@@ -2557,6 +2788,49 @@ function renderScheduleView(container) {
         render();
       });
     }
+
+    // Admin Module (Course) Handlers
+    const addCourseTopBtn = container.querySelector('#add-course-btn-top');
+    if (addCourseTopBtn) {
+      addCourseTopBtn.addEventListener('click', () => {
+        openCourseModal(null);
+      });
+    }
+
+    const addCourseBtn = container.querySelector('#add-course-btn');
+    if (addCourseBtn) {
+      addCourseBtn.addEventListener('click', () => {
+        openCourseModal(null);
+      });
+    }
+
+    container.querySelectorAll('.edit-course-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = store.data.courses.find(c => c.code === btn.dataset.code);
+        if (item) openCourseModal(item);
+      });
+    });
+
+    container.querySelectorAll('.delete-course-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const code = btn.dataset.code;
+        const item = store.data.courses.find(c => c.code === code);
+        if (item) {
+          openDeleteConfirmModal(`Remove Academic Module "${item.code}: ${item.name}" from semester curriculum?`, () => {
+            store.deleteCourse(item.code);
+          });
+        }
+      });
+    });
+
+    container.querySelectorAll('.add-module-lab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openScheduleModal('lab', null, btn.dataset.code);
+      });
+    });
 
     // Admin add buttons
     const addLecBtn = container.querySelector('#add-lecture-btn');
@@ -2786,7 +3060,7 @@ function renderAttendanceView(container) {
             <span class="stat-icon text-amber">🧪</span>
           </div>
           <div class="stat-number text-amber">${allLabs.length} Labs</div>
-          <div class="sub-text font-xs">EC3301, EC3203 & EC3305 Modules</div>
+          <div class="sub-text font-xs">${store.data.courses.map(c => c.code).join(', ')} Modules</div>
         </div>
       </div>
 

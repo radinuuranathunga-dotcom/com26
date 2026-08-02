@@ -47,6 +47,10 @@ class Store {
             parsed.lectures = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.lectures));
             this.saveData(parsed);
           }
+          if (!parsed.courses || !Array.isArray(parsed.courses) || parsed.courses.length === 0) {
+            parsed.courses = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.courses));
+            this.saveData(parsed);
+          }
           return parsed;
         }
       }
@@ -216,6 +220,38 @@ class Store {
     this.data.labGroups.push(newGroup);
     this.notify();
     return newGroup;
+  }
+
+  // --- Course / Module Management ---
+  addCourse(course) {
+    const cleanCode = course.code.trim().toUpperCase();
+    const exists = this.data.courses.some(c => c.code.toUpperCase() === cleanCode);
+    if (exists) {
+      return { success: false, message: `Module with code "${cleanCode}" already exists!` };
+    }
+    course.code = cleanCode;
+    course.labsCount = course.labsCount || 0;
+    this.data.courses.push(course);
+    this.notify();
+    return { success: true, course };
+  }
+
+  updateCourse(updatedCourse) {
+    const cleanCode = updatedCourse.code.trim().toUpperCase();
+    const index = this.data.courses.findIndex(c => c.code.toUpperCase() === cleanCode);
+    if (index !== -1) {
+      this.data.courses[index] = { ...this.data.courses[index], ...updatedCourse, code: cleanCode };
+      this.notify();
+      return { success: true };
+    }
+    return { success: false, message: `Module "${cleanCode}" not found!` };
+  }
+
+  deleteCourse(code) {
+    const cleanCode = code.trim().toUpperCase();
+    this.data.courses = this.data.courses.filter(c => c.code.toUpperCase() !== cleanCode);
+    this.notify();
+    return { success: true };
   }
 
   // --- Schedule Editing (Lectures & Labs) ---
