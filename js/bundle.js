@@ -2571,7 +2571,6 @@ function renderDashboardView(container) {
                 <th>Group Leader</th>
                 <th>Leader Student ID</th>
                 <th>Roster Count</th>
-                <th>Assigned Lab Room</th>
                 ${isAdmin ? '<th>Actions</th>' : ''}
               </tr>
             </thead>
@@ -2584,7 +2583,6 @@ function renderDashboardView(container) {
                     <td><span class="font-bold text-cyan">${g.leaderName}</span></td>
                     <td class="font-mono text-muted">${g.leaderId || 'N/A'}</td>
                     <td>${groupStudents.length} Students</td>
-                    <td class="text-muted font-sm">${g.labRoom}</td>
                     ${isAdmin ? `
                       <td>
                         <button class="btn btn-xs btn-outline-cyan edit-dash-group-btn" data-id="${g.id}">
