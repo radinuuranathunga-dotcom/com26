@@ -2553,7 +2553,7 @@ function renderDashboardView(container) {
 
       <div class="kpi-card card">
         <div class="kpi-header">
-          <span class="kpi-title">Weekly Lab Sessions</span>
+          <span class="kpi-title">Lab Sessions</span>
           <span class="kpi-icon icon-rose">🔬</span>
         </div>
         <div class="kpi-value text-cyan">${labs.length}</div>
