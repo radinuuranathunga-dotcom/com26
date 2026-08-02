@@ -1535,11 +1535,6 @@ function renderNavbar(container) {
         <button id="theme-toggle-btn" class="icon-btn" title="Toggle Dark/Light Mode">
           ${theme === 'dark' ? '☀️' : '🌙'}
         </button>
-
-        <!-- Reset Demo Data -->
-        <button id="reset-data-btn" class="btn btn-outline btn-sm" title="Reset all data to default initial state">
-          🔄 Reset Demo
-        </button>
       </div>
     </header>
   `;
@@ -1561,15 +1556,22 @@ function renderNavbar(container) {
         return;
       }
 
-      // Check if already authenticated for selected role
-      if (store.authenticatedRoles[selectedRole]) {
-        store.setRole(selectedRole);
-        if (selectedRole === 'leader' && store.activeView !== 'attendance') {
-          store.setActiveView('attendance');
+      if (selectedRole === 'admin') {
+        if (auth.admin) {
+          store.setRole('admin');
+        } else {
+          openPasswordModal('admin');
         }
-      } else {
-        // Prompt for password
-        openPasswordModal(selectedRole, store.activeLeaderGroup);
+        return;
+      }
+
+      if (selectedRole === 'leader') {
+        if (auth.leader) {
+          store.setRole('leader', activeGroup);
+        } else {
+          openPasswordModal('leader', activeGroup);
+        }
+        return;
       }
     });
   });
@@ -1597,15 +1599,6 @@ function renderNavbar(container) {
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
       store.setTheme(store.currentTheme === 'dark' ? 'light' : 'dark');
-    });
-  }
-
-  const resetBtn = container.querySelector('#reset-data-btn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (confirm('Are you sure you want to reset all schedules, 200 students, and attendance logs back to the initial demo data?')) {
-        store.resetToDefaults();
-      }
     });
   }
 }
