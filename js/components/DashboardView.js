@@ -76,13 +76,15 @@ export function renderDashboardView(container) {
     <!-- Dashboard Content Layout Grid -->
     <div class="dashboard-layout-grid">
       
-      <!-- Group Roster Summary Table -->
+      <!-- Group Roster Summary (Desktop Table & Mobile Expandable Cards) -->
       <div class="card chart-card">
         <div class="card-header">
           <h3 class="card-title">🧪 Laboratory Groups Overview (CE01 - CE34)</h3>
           <span class="sub-text">${isAdmin ? '👑 Admin Mode: Click Edit Leader to reassign leaders' : 'Assigned Leaders & Rooms'}</span>
         </div>
-        <div class="table-container mt-3">
+
+        <!-- Desktop Wide Table (Hidden on Mobile) -->
+        <div class="table-container desktop-table-wrapper mt-3">
           <table class="data-table">
             <thead>
               <tr>
@@ -115,6 +117,44 @@ export function renderDashboardView(container) {
             </tbody>
           </table>
         </div>
+
+        <!-- Mobile Expandable Cards List (Visible on Mobile Screens) -->
+        <div class="mobile-groups-card-list mt-3">
+          ${groups.map(g => {
+            const groupStudents = students.filter(s => s.labGroup === g.id);
+            return `
+              <div class="mobile-group-card">
+                <div class="mobile-group-card-header">
+                  <div class="mobile-group-info-left">
+                    <span class="group-tag">${g.id}</span>
+                    <span class="font-bold text-cyan ml-2">${g.leaderName}</span>
+                  </div>
+                  <div class="mobile-group-info-right">
+                    <span class="badge badge-success">${groupStudents.length} Students</span>
+                    <span class="accordion-chevron">▼</span>
+                  </div>
+                </div>
+                <div class="mobile-group-card-body hidden">
+                  <div class="mobile-detail-row">
+                    <span class="mobile-detail-label">Leader Student ID:</span>
+                    <span class="font-mono text-muted">${g.leaderId || 'N/A'}</span>
+                  </div>
+                  <div class="mobile-detail-row">
+                    <span class="mobile-detail-label">Roster Count:</span>
+                    <span class="font-bold">${groupStudents.length} Assigned Students</span>
+                  </div>
+                  ${isAdmin ? `
+                    <div class="mobile-card-actions mt-2">
+                      <button class="btn btn-sm btn-outline-cyan edit-dash-group-btn w-100" data-id="${g.id}">
+                        ✏️ Edit Leader
+                      </button>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
       </div>
 
       <!-- Quick Action Shortcuts Sidebar -->
@@ -122,7 +162,7 @@ export function renderDashboardView(container) {
         <h3 class="card-title">🚀 Department Quick Actions</h3>
         
         <div class="quick-action-buttons">
-          <button id="dash-go-schedule" class="action-btn">
+          <button id="dash-go-schedule" class="action-btn touch-action-btn">
             <span class="btn-icon-bg bg-indigo">📅</span>
             <div class="action-text">
               <strong>Manage Timetable & Modules</strong>
@@ -130,7 +170,7 @@ export function renderDashboardView(container) {
             </div>
           </button>
 
-          <button id="dash-go-attendance" class="action-btn">
+          <button id="dash-go-attendance" class="action-btn touch-action-btn">
             <span class="btn-icon-bg bg-cyan">⚡</span>
             <div class="action-text">
               <strong>Take Lab Attendance</strong>
@@ -138,7 +178,7 @@ export function renderDashboardView(container) {
             </div>
           </button>
 
-          <button id="dash-go-students" class="action-btn">
+          <button id="dash-go-students" class="action-btn touch-action-btn">
             <span class="btn-icon-bg bg-emerald">👥</span>
             <div class="action-text">
               <strong>Browse ${students.length} Students</strong>
@@ -223,6 +263,19 @@ export function renderDashboardView(container) {
     btn.addEventListener('click', () => {
       const grp = groups.find(g => g.id === btn.dataset.id);
       if (grp) openEditLabGroupModal(grp);
+    });
+  });
+
+  // Mobile Group Card Accordion Toggle Handler
+  container.querySelectorAll('.mobile-group-card-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const card = header.closest('.mobile-group-card');
+      const body = card.querySelector('.mobile-group-card-body');
+      const chevron = card.querySelector('.accordion-chevron');
+      if (body) {
+        body.classList.toggle('hidden');
+        if (chevron) chevron.textContent = body.classList.contains('hidden') ? '▼' : '▲';
+      }
     });
   });
 

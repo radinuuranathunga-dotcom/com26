@@ -877,3 +877,167 @@
 .login-close-corner-btn:hover {
   color: #fff;
 }
+
+/* Sticky Top Navbar & Mobile Hamburger Drawer */
+.hamburger-toggle-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .navbar-right-desktop {
+    display: none !important;
+  }
+  .hamburger-toggle-btn {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .navbar-right-desktop {
+    display: flex !important;
+    align-items: center;
+    gap: 20px;
+  }
+  .mobile-nav-drawer {
+    display: none !important;
+  }
+}
+
+.mobile-nav-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--accent-indigo);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  padding: 16px 20px 24px;
+  z-index: 999;
+}
+
+.mobile-drawer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-nav-item {
+  width: 100%;
+  text-align: left;
+  justify-content: flex-start;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-radius: var(--radius-md);
+}
+
+.mobile-role-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-role-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
+  font-size: 0.92rem;
+}
+
+/* Mobile Expandable Laboratory Group Cards */
+.mobile-groups-card-list {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .desktop-table-wrapper {
+    display: none !important;
+  }
+  .mobile-groups-card-list {
+    display: flex !important;
+  }
+}
+
+.mobile-group-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.mobile-group-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mobile-group-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-group-info-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.accordion-chevron {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.mobile-group-card-body {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+}
+
+.mobile-detail-label {
+  color: var(--text-secondary);
+}
+
+.touch-action-btn {
+  min-height: 52px;
+  padding: 16px 20px;
+  touch-action: manipulation;
+}

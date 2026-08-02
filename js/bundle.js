@@ -1451,28 +1451,35 @@ const store = new Store();
 /**
  * Navbar.js - Header Bar with Role Switcher, Password Auth & Theme Toggle
  */
-function renderNavbar(container) {
+function renderNavbar(activeView) {
+  const container = document.getElementById('navbar-container');
+  if (!container) return;
+
   const role = store.currentRole;
-  const activeView = store.activeView;
-  const theme = store.currentTheme;
+  const groups = store.labGroups;
   const activeGroup = store.activeLeaderGroup;
   const auth = store.authenticatedRoles;
-
-  const groups = store.data.labGroups;
+  const theme = store.currentTheme;
 
   container.innerHTML = `
     <header class="navbar">
-      <div class="navbar-left">
-        <div class="brand">
-          <div class="brand-logo">
-            <img src="assets/ruhuna-logo.jpg" alt="University of Ruhuna Logo" class="brand-img-logo">
-          </div>
-          <div class="brand-text">
-            <span class="brand-title">CompEng Academic Hub</span>
-            <span class="brand-subtitle">Computer Engineering Department</span>
-          </div>
+      <div class="brand">
+        <div class="brand-logo">
+          <img src="assets/ruhuna-logo.jpg" alt="University of Ruhuna Logo" class="brand-img-logo">
         </div>
+        <div class="brand-text">
+          <span class="brand-title">CompEng Academic Hub</span>
+          <span class="brand-subtitle">Computer Engineering Department</span>
+        </div>
+      </div>
 
+      <!-- Hamburger Menu Toggle Button for Mobile Viewports -->
+      <button id="mobile-menu-toggle-btn" class="hamburger-toggle-btn" aria-label="Toggle Navigation Menu">
+        <span class="hamburger-icon">☰</span>
+      </button>
+
+      <!-- Desktop View Navigation & Controls -->
+      <div class="navbar-right-desktop">
         <nav class="nav-tabs">
           <button class="nav-tab ${activeView === 'dashboard' ? 'active' : ''}" data-view="dashboard">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
@@ -1492,36 +1499,29 @@ function renderNavbar(container) {
 
           <button class="nav-tab ${activeView === 'students' ? 'active' : ''}" data-view="students">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            Students (200)
+            Students (${store.students.length})
           </button>
         </nav>
-      </div>
 
-      <div class="navbar-right">
-        <!-- Role Password Selector -->
         <div class="role-selector-container">
           <label class="role-label">System Access Mode:</label>
           <div class="role-pill-group">
-            
             <button class="role-btn ${role === 'admin' ? 'active' : ''}" data-role="admin" title="Admin / Faculty: Manage Schedules & Data Only (Password Required)">
-              ${auth.admin ? '🔓' : '🔒'} Admin (Data Entry)
+              ${auth.admin ? '🔓' : '🔒'} Admin
             </button>
-
             <button class="role-btn ${role === 'leader' ? 'active' : ''}" data-role="leader" title="Lab Group Leader: Mark Attendance Only (Password Required)">
-              ${auth.leader ? '🔓' : '🔒'} Group Leader (Mark Attendance)
+              ${auth.leader ? '🔓' : '🔒'} Group Leader
             </button>
-
             <button class="role-btn ${role === 'student' ? 'active' : ''}" data-role="student" title="Student View: Public Read-Only Timetables">
               🎓 Student View
             </button>
-
           </div>
         </div>
 
         ${role === 'leader' ? `
-          <div class="leader-group-select-wrapper animate-fade-in" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); padding: 4px 12px; border-radius: 20px;">
+          <div class="leader-badge-indicator">
             <span class="leader-icon">⚡</span>
-            <span class="font-bold text-cyan font-sm">Leader: ${activeGroup} (${groups.find(g => g.id === activeGroup)?.leaderName || 'Leader'})</span>
+            <span class="font-bold text-cyan font-sm">Leader: ${activeGroup}</span>
           </div>
         ` : ''}
 
@@ -1531,17 +1531,73 @@ function renderNavbar(container) {
           </button>
         ` : ''}
 
-        <!-- Theme Toggle -->
         <button id="theme-toggle-btn" class="icon-btn" title="Toggle Dark/Light Mode">
           ${theme === 'dark' ? '☀️' : '🌙'}
         </button>
       </div>
+
+      <!-- Mobile Drawer Dropdown Menu -->
+      <div id="mobile-nav-drawer" class="mobile-nav-drawer hidden">
+        <div class="mobile-drawer-inner">
+          <div class="mobile-section-title">Navigation</div>
+          <div class="mobile-nav-links">
+            <button class="mobile-nav-item nav-tab ${activeView === 'dashboard' ? 'active' : ''}" data-view="dashboard">
+              📊 Dashboard
+            </button>
+            <button class="mobile-nav-item nav-tab ${activeView === 'schedule' ? 'active' : ''}" data-view="schedule">
+              📅 Schedules ${role === 'admin' ? '(Editable)' : ''}
+            </button>
+            <button class="mobile-nav-item nav-tab ${activeView === 'attendance' ? 'active' : ''}" data-view="attendance">
+              📝 Lab Attendance ${role === 'leader' ? '(Leader Mode)' : ''}
+            </button>
+            <button class="mobile-nav-item nav-tab ${activeView === 'students' ? 'active' : ''}" data-view="students">
+              👥 Students (${store.students.length})
+            </button>
+          </div>
+
+          <div class="mobile-section-title mt-3">Access Mode</div>
+          <div class="mobile-role-buttons">
+            <button class="mobile-role-btn role-btn ${role === 'admin' ? 'active' : ''}" data-role="admin">
+              ${auth.admin ? '🔓' : '🔒'} Admin (Data Entry)
+            </button>
+            <button class="mobile-role-btn role-btn ${role === 'leader' ? 'active' : ''}" data-role="leader">
+              ${auth.leader ? '🔓' : '🔒'} Group Leader
+            </button>
+            <button class="mobile-role-btn role-btn ${role === 'student' ? 'active' : ''}" data-role="student">
+              🎓 Student View
+            </button>
+          </div>
+
+          <div class="mobile-drawer-footer mt-3">
+            ${(auth.admin || auth.leader) ? `
+              <button id="mobile-logout-btn" class="btn btn-outline-danger w-100 mb-2">
+                🔒 Lock Session
+              </button>
+            ` : ''}
+            <button id="mobile-theme-toggle-btn" class="btn btn-outline w-100">
+              ${theme === 'dark' ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode'}
+            </button>
+          </div>
+        </div>
+      </div>
     </header>
   `;
+
+  // Hamburger Menu Toggle Handler
+  const mobileToggleBtn = container.querySelector('#mobile-menu-toggle-btn');
+  const mobileDrawer = container.querySelector('#mobile-nav-drawer');
+  if (mobileToggleBtn && mobileDrawer) {
+    mobileToggleBtn.addEventListener('click', () => {
+      mobileDrawer.classList.toggle('hidden');
+      const isExpanded = !mobileDrawer.classList.contains('hidden');
+      mobileToggleBtn.querySelector('.hamburger-icon').textContent = isExpanded ? '✕' : '☰';
+    });
+  }
 
   // Navigation tabs
   container.querySelectorAll('.nav-tab').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (mobileDrawer) mobileDrawer.classList.add('hidden');
       store.setActiveView(btn.dataset.view);
     });
   });
@@ -1549,6 +1605,7 @@ function renderNavbar(container) {
   // Role button clicks with password authentication
   container.querySelectorAll('.role-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (mobileDrawer) mobileDrawer.classList.add('hidden');
       const selectedRole = btn.dataset.role;
 
       if (selectedRole === 'student') {
@@ -1576,31 +1633,17 @@ function renderNavbar(container) {
     });
   });
 
-  const leaderSelect = container.querySelector('#navbar-leader-group-select');
-  if (leaderSelect) {
-    leaderSelect.addEventListener('change', (e) => {
-      store.activeLeaderGroup = e.target.value;
-      if (!store.authenticatedRoles.leader) {
-        openPasswordModal('leader', e.target.value);
-      } else {
-        store.setRole('leader', e.target.value);
-      }
-    });
-  }
-
   const logoutBtn = container.querySelector('#logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      store.logout();
-    });
-  }
+  if (logoutBtn) logoutBtn.addEventListener('click', () => store.logout());
+
+  const mobileLogoutBtn = container.querySelector('#mobile-logout-btn');
+  if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', () => store.logout());
 
   const themeBtn = container.querySelector('#theme-toggle-btn');
-  if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
-      store.setTheme(store.currentTheme === 'dark' ? 'light' : 'dark');
-    });
-  }
+  if (themeBtn) themeBtn.addEventListener('click', () => store.setTheme(store.currentTheme === 'dark' ? 'light' : 'dark'));
+
+  const mobileThemeBtn = container.querySelector('#mobile-theme-toggle-btn');
+  if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', () => store.setTheme(store.currentTheme === 'dark' ? 'light' : 'dark'));
 }
 
 
@@ -2543,13 +2586,15 @@ function renderDashboardView(container) {
     <!-- Dashboard Content Layout Grid -->
     <div class="dashboard-layout-grid">
       
-      <!-- Group Roster Summary Table -->
+      <!-- Group Roster Summary (Desktop Table & Mobile Expandable Cards) -->
       <div class="card chart-card">
         <div class="card-header">
           <h3 class="card-title">🧪 Laboratory Groups Overview (CE01 - CE34)</h3>
           <span class="sub-text">${isAdmin ? '👑 Admin Mode: Click Edit Leader to reassign leaders' : 'Assigned Leaders & Rooms'}</span>
         </div>
-        <div class="table-container mt-3">
+
+        <!-- Desktop Wide Table (Hidden on Mobile) -->
+        <div class="table-container desktop-table-wrapper mt-3">
           <table class="data-table">
             <thead>
               <tr>
@@ -2582,6 +2627,44 @@ function renderDashboardView(container) {
             </tbody>
           </table>
         </div>
+
+        <!-- Mobile Expandable Cards List (Visible on Mobile Screens) -->
+        <div class="mobile-groups-card-list mt-3">
+          ${groups.map(g => {
+            const groupStudents = students.filter(s => s.labGroup === g.id);
+            return `
+              <div class="mobile-group-card">
+                <div class="mobile-group-card-header">
+                  <div class="mobile-group-info-left">
+                    <span class="group-tag">${g.id}</span>
+                    <span class="font-bold text-cyan ml-2">${g.leaderName}</span>
+                  </div>
+                  <div class="mobile-group-info-right">
+                    <span class="badge badge-success">${groupStudents.length} Students</span>
+                    <span class="accordion-chevron">▼</span>
+                  </div>
+                </div>
+                <div class="mobile-group-card-body hidden">
+                  <div class="mobile-detail-row">
+                    <span class="mobile-detail-label">Leader Student ID:</span>
+                    <span class="font-mono text-muted">${g.leaderId || 'N/A'}</span>
+                  </div>
+                  <div class="mobile-detail-row">
+                    <span class="mobile-detail-label">Roster Count:</span>
+                    <span class="font-bold">${groupStudents.length} Assigned Students</span>
+                  </div>
+                  ${isAdmin ? `
+                    <div class="mobile-card-actions mt-2">
+                      <button class="btn btn-sm btn-outline-cyan edit-dash-group-btn w-100" data-id="${g.id}">
+                        ✏️ Edit Leader
+                      </button>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
       </div>
 
       <!-- Quick Action Shortcuts Sidebar -->
@@ -2589,7 +2672,7 @@ function renderDashboardView(container) {
         <h3 class="card-title">🚀 Department Quick Actions</h3>
         
         <div class="quick-action-buttons">
-          <button id="dash-go-schedule" class="action-btn">
+          <button id="dash-go-schedule" class="action-btn touch-action-btn">
             <span class="btn-icon-bg bg-indigo">📅</span>
             <div class="action-text">
               <strong>Manage Timetable & Modules</strong>
@@ -2597,7 +2680,7 @@ function renderDashboardView(container) {
             </div>
           </button>
 
-          <button id="dash-go-attendance" class="action-btn">
+          <button id="dash-go-attendance" class="action-btn touch-action-btn">
             <span class="btn-icon-bg bg-cyan">⚡</span>
             <div class="action-text">
               <strong>Take Lab Attendance</strong>
@@ -2605,7 +2688,7 @@ function renderDashboardView(container) {
             </div>
           </button>
 
-          <button id="dash-go-students" class="action-btn">
+          <button id="dash-go-students" class="action-btn touch-action-btn">
             <span class="btn-icon-bg bg-emerald">👥</span>
             <div class="action-text">
               <strong>Browse ${students.length} Students</strong>
@@ -2690,6 +2773,19 @@ function renderDashboardView(container) {
     btn.addEventListener('click', () => {
       const grp = groups.find(g => g.id === btn.dataset.id);
       if (grp) openEditLabGroupModal(grp);
+    });
+  });
+
+  // Mobile Group Card Accordion Toggle Handler
+  container.querySelectorAll('.mobile-group-card-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const card = header.closest('.mobile-group-card');
+      const body = card.querySelector('.mobile-group-card-body');
+      const chevron = card.querySelector('.accordion-chevron');
+      if (body) {
+        body.classList.toggle('hidden');
+        if (chevron) chevron.textContent = body.classList.contains('hidden') ? '▼' : '▲';
+      }
     });
   });
 
