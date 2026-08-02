@@ -32,6 +32,35 @@ class Store {
     
     // Apply initial theme attribute
     document.documentElement.setAttribute('data-theme', this.currentTheme);
+
+    // Initial student statistics calculation
+    this.recalculateStudentStats();
+
+    // Cross-tab auto-sync & automatic stats calculation for all 195/200 students
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY) {
+          this.data = this.loadData();
+          this.recalculateStudentStats();
+          this.notify();
+        }
+      });
+      
+      // Real-time auto-sync ticker (every 10 seconds) to guarantee student stats update
+      setInterval(() => {
+        try {
+          const savedStr = localStorage.getItem(STORAGE_KEY);
+          if (savedStr) {
+            const parsed = JSON.parse(savedStr);
+            if (parsed && JSON.stringify(parsed) !== JSON.stringify(this.data)) {
+              this.data = parsed;
+              this.recalculateStudentStats();
+              this.notify();
+            }
+          }
+        } catch (e) {}
+      }, 10000);
+    }
   }
 
   // Load from localStorage or seed with mock data
@@ -232,6 +261,7 @@ class Store {
     course.code = cleanCode;
     course.labsCount = course.labsCount || 0;
     this.data.courses.push(course);
+    this.recalculateStudentStats();
     this.notify();
     return { success: true, course };
   }
@@ -241,6 +271,7 @@ class Store {
     const index = this.data.courses.findIndex(c => c.code.toUpperCase() === cleanCode);
     if (index !== -1) {
       this.data.courses[index] = { ...this.data.courses[index], ...updatedCourse, code: cleanCode };
+      this.recalculateStudentStats();
       this.notify();
       return { success: true };
     }
@@ -250,6 +281,19 @@ class Store {
   deleteCourse(code) {
     const cleanCode = code.trim().toUpperCase();
     this.data.courses = this.data.courses.filter(c => c.code.toUpperCase() !== cleanCode);
+    
+    // Clean up labs and attendance logs associated with deleted module
+    const removedLabIds = this.data.labs
+      .filter(l => l.courseCode && l.courseCode.toUpperCase() === cleanCode)
+      .map(l => l.id);
+
+    this.data.labs = this.data.labs.filter(l => !l.courseCode || l.courseCode.toUpperCase() !== cleanCode);
+
+    if (removedLabIds.length > 0) {
+      this.data.attendanceLogs = this.data.attendanceLogs.filter(log => !removedLabIds.includes(log.labId));
+    }
+
+    this.recalculateStudentStats();
     this.notify();
     return { success: true };
   }
@@ -282,6 +326,7 @@ class Store {
     lab.id = `LAB-${Date.now().toString().slice(-4)}`;
     lab.type = "Lab";
     this.data.labs.push(lab);
+    this.recalculateStudentStats();
     this.notify();
     return lab;
   }
@@ -290,6 +335,7 @@ class Store {
     const index = this.data.labs.findIndex(l => l.id === updatedLab.id);
     if (index !== -1) {
       this.data.labs[index] = { ...this.data.labs[index], ...updatedLab };
+      this.recalculateStudentStats();
       this.notify();
       return true;
     }
@@ -298,6 +344,8 @@ class Store {
 
   deleteLab(id) {
     this.data.labs = this.data.labs.filter(l => l.id !== id);
+    this.data.attendanceLogs = this.data.attendanceLogs.filter(log => log.labId !== id);
+    this.recalculateStudentStats();
     this.notify();
   }
 
