@@ -13,28 +13,40 @@ function initApp() {
   const viewContainer = document.getElementById('view-container');
 
   function updateUI() {
-    // 1. Render Header / Navbar
-    renderNavbar(navbarContainer);
+    try {
+      // 1. Render Header / Navbar
+      if (navbarContainer) renderNavbar(navbarContainer);
 
-    // 2. Render Active View
-    const currentView = store.activeView;
+      // 2. Render Active View
+      const currentView = store.activeView;
 
-    switch (currentView) {
-      case 'dashboard':
-        renderDashboardView(viewContainer);
-        break;
-      case 'schedule':
-        renderScheduleView(viewContainer);
-        break;
-      case 'attendance':
-        renderAttendanceView(viewContainer);
-        break;
-      case 'students':
-        renderStudentsView(viewContainer);
-        break;
-      default:
-        renderDashboardView(viewContainer);
-        break;
+      if (viewContainer) {
+        switch (currentView) {
+          case 'dashboard':
+            renderDashboardView(viewContainer);
+            break;
+          case 'schedule':
+            renderScheduleView(viewContainer);
+            break;
+          case 'attendance':
+            renderAttendanceView(viewContainer);
+            break;
+          case 'students':
+            renderStudentsView(viewContainer);
+            break;
+          default:
+            renderDashboardView(viewContainer);
+            break;
+        }
+      }
+    } catch (err) {
+      console.error("UI Render Error caught:", err);
+      try {
+        localStorage.clear();
+        store.resetToDefaults();
+      } catch (e) {
+        console.error("Reset error:", e);
+      }
     }
   }
 
@@ -48,4 +60,8 @@ function initApp() {
 }
 
 // Boot application when DOM is ready
-document.addEventListener('DOMContentLoaded', initApp);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}

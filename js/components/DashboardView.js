@@ -18,7 +18,7 @@ export function renderDashboardView(container) {
       <div class="view-header-left">
         <h2>📊 Computer Engineering Department Dashboard</h2>
         <p class="view-description">
-          Overview of academic course schedules, 162 student rosters, and laboratory groups.
+          Overview of academic course schedules, ${students.length} student rosters, and laboratory groups.
         </p>
       </div>
 
@@ -37,7 +37,7 @@ export function renderDashboardView(container) {
           <span class="kpi-icon icon-indigo">🎓</span>
         </div>
         <div class="kpi-value">${students.length}</div>
-        <div class="kpi-subtitle">Divided across 28 Lab Groups</div>
+        <div class="kpi-subtitle">Divided across ${groups.length} Lab Groups</div>
       </div>
 
       <div class="kpi-card card">
@@ -46,7 +46,7 @@ export function renderDashboardView(container) {
           <span class="kpi-icon icon-cyan">🧪</span>
         </div>
         <div class="kpi-value">${groups.length}</div>
-        <div class="kpi-subtitle">Managed by 28 Group Leaders</div>
+        <div class="kpi-subtitle">Managed by ${groups.length} Group Leaders</div>
       </div>
 
       <div class="kpi-card card">

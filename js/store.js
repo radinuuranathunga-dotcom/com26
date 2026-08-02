@@ -35,10 +35,8 @@ class Store {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        // If dataset is from old mock format, upgrade to real 195 student dataset (CE01-CE34)
-        if (parsed && parsed.department && parsed.department.totalStudents === 195) {
-          // Force upgrade to official 11 lab sessions dataset if missing or contains old lab codes
-          if (!parsed.labs || parsed.labs.length !== 11 || parsed.labs.some(l => l.courseCode === 'EC3010-L' || l.courseCode === 'EC3010')) {
+        if (parsed && Array.isArray(parsed.students) && parsed.students.length > 0 && Array.isArray(parsed.labGroups)) {
+          if (!parsed.labs || parsed.labs.length !== 11) {
             parsed.labs = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.labs));
             parsed.courses = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.courses));
             parsed.lectures = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA.lectures));
@@ -48,10 +46,11 @@ class Store {
         }
       }
     } catch (e) {
-      console.warn("Failed to read from localStorage, resetting to real student dataset.", e);
+      console.warn("Failed to read from localStorage, resetting to initial dataset.", e);
     }
-    this.saveData(INITIAL_MOCK_DATA);
-    return INITIAL_MOCK_DATA;
+    const freshData = JSON.parse(JSON.stringify(INITIAL_MOCK_DATA));
+    this.saveData(freshData);
+    return freshData;
   }
 
   saveData(data = this.data) {
