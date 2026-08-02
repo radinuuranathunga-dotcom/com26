@@ -319,6 +319,18 @@ class Store {
     });
   }
 
+  // Helper method to sort array of students by Registration Number (e.g. EG/2023/5001)
+  sortStudentsByRegistration(studentsArr) {
+    return studentsArr.sort((a, b) => {
+      const numA = parseInt(a.id.replace(/\D/g, ''), 10) || 0;
+      const numB = parseInt(b.id.replace(/\D/g, ''), 10) || 0;
+      if (numA !== numB) {
+        return numA - numB;
+      }
+      return a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' });
+    });
+  }
+
   // --- Student Management ---
   addStudent(student) {
     const exists = this.data.students.some(s => s.id.toLowerCase() === student.id.toLowerCase());
@@ -331,6 +343,7 @@ class Store {
     student.isLeader = student.isLeader || false;
     
     this.data.students.push(student);
+    this.sortStudentsByRegistration(this.data.students);
     
     // Update group student count
     const grp = this.data.labGroups.find(g => g.id === student.labGroup);
@@ -346,6 +359,7 @@ class Store {
     const index = this.data.students.findIndex(s => s.id === updatedStudent.id);
     if (index !== -1) {
       this.data.students[index] = { ...this.data.students[index], ...updatedStudent };
+      this.sortStudentsByRegistration(this.data.students);
       this.notify();
       return true;
     }
@@ -370,7 +384,8 @@ class Store {
   }
 
   getStudentsByGroup(groupName) {
-    return this.data.students.filter(s => s.labGroup === groupName);
+    const groupStudents = this.data.students.filter(s => s.labGroup === groupName);
+    return this.sortStudentsByRegistration(groupStudents);
   }
 
   getAttendanceLogsForGroup(groupName) {

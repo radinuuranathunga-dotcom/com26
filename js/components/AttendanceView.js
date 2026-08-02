@@ -62,7 +62,15 @@ export function renderAttendanceView(container) {
                s.name.toLowerCase().includes(q) ||
                s.labGroup.toLowerCase().includes(q);
       }
-      return true;
+    // Sort filtered students by Group ID and then Registration Number
+    filteredStudents.sort((a, b) => {
+      if (a.labGroup !== b.labGroup) {
+        return a.labGroup.localeCompare(b.labGroup, undefined, { numeric: true });
+      }
+      const numA = parseInt(a.id.replace(/\D/g, ''), 10) || 0;
+      const numB = parseInt(b.id.replace(/\D/g, ''), 10) || 0;
+      if (numA !== numB) return numA - numB;
+      return a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' });
     });
 
     // Map attendance logs into quick matrix: logMatrix[studentId][labId] = status
