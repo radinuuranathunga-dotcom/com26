@@ -37,7 +37,7 @@ export function renderAttendanceView(container) {
         draftRecords[st.id] = { ...existingLog.records[st.id] };
       } else {
         draftRecords[st.id] = {
-          status: 'Present',
+          status: 'Unmarked',
           notes: ''
         };
       }
@@ -54,11 +54,13 @@ export function renderAttendanceView(container) {
     let presentCount = 0;
     let absentCount = 0;
     let lateCount = 0;
+    let unmarkedCount = 0;
 
     Object.values(draftRecords).forEach(rec => {
       if (rec.status === 'Present') presentCount++;
       else if (rec.status === 'Absent') absentCount++;
       else if (rec.status === 'Late') lateCount++;
+      else unmarkedCount++;
     });
 
     container.innerHTML = `
@@ -171,6 +173,10 @@ export function renderAttendanceView(container) {
           <span class="stat-label">Total Group Roster</span>
           <span class="stat-value">${groupStudents.length} Students</span>
         </div>
+        <div class="summary-stat text-muted" style="opacity: 0.85;">
+          <span class="stat-label">Unmarked</span>
+          <span class="stat-value" id="stat-unmarked-count">${unmarkedCount}</span>
+        </div>
         <div class="summary-stat text-success">
           <span class="stat-label">Present</span>
           <span class="stat-value" id="stat-present-count">${presentCount}</span>
@@ -280,17 +286,21 @@ export function renderAttendanceView(container) {
     let presentCount = 0;
     let absentCount = 0;
     let lateCount = 0;
+    let unmarkedCount = 0;
 
     Object.values(draftRecords).forEach(rec => {
       if (rec.status === 'Present') presentCount++;
       else if (rec.status === 'Absent') absentCount++;
       else if (rec.status === 'Late') lateCount++;
+      else unmarkedCount++;
     });
 
+    const uEl = container.querySelector('#stat-unmarked-count');
     const pEl = container.querySelector('#stat-present-count');
     const lEl = container.querySelector('#stat-late-count');
     const aEl = container.querySelector('#stat-absent-count');
 
+    if (uEl) uEl.textContent = unmarkedCount;
     if (pEl) pEl.textContent = presentCount;
     if (lEl) lEl.textContent = lateCount;
     if (aEl) aEl.textContent = absentCount;
