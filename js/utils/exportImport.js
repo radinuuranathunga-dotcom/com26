@@ -60,6 +60,42 @@ export function exportAttendanceLogCsv(logEntry, students) {
   downloadCsv(`Lab_Attendance_${logEntry.group}_${(logEntry.labName || 'Lab').replace(/[^a-zA-Z0-9_-]/g, '_')}.csv`, csv);
 }
 
+// Export Full Master Attendance Matrix (All Students x All Labs) to CSV
+export function exportMasterAttendanceCsv(students, labs, attendanceLogs) {
+  // Map attendance by labId and studentId
+  const logMatrix = {};
+  attendanceLogs.forEach(log => {
+    if (log.records && log.labId) {
+      Object.keys(log.records).forEach(stId => {
+        if (!logMatrix[stId]) logMatrix[stId] = {};
+        logMatrix[stId][log.labId] = log.records[stId].status;
+      });
+    }
+  });
+
+  let csv = 'Student ID,Full Name,Lab Group,Year,Semester';
+  labs.forEach(l => {
+    csv += `,"${l.courseCode} ${l.labNumber || 'Lab'}"`;
+  });
+  csv += ',Labs Completed,Total Labs,Attendance Rate %\n';
+
+  students.forEach(s => {
+    let completedCount = 0;
+    csv += `"${s.id}","${s.name}","${s.labGroup}",${s.year},${s.semester}`;
+    
+    labs.forEach(l => {
+      const status = (logMatrix[s.id] && logMatrix[s.id][l.id]) ? logMatrix[s.id][l.id] : 'Unmarked';
+      if (status === 'Present' || status === 'Late') completedCount++;
+      csv += `,"${status}"`;
+    });
+
+    const rate = labs.length > 0 ? ((completedCount / labs.length) * 100).toFixed(1) : 0;
+    csv += `,${completedCount},${labs.length},"${rate}%"\n`;
+  });
+
+  downloadCsv(`CompEng_Master_Attendance_Report_${new Date().toISOString().slice(0,10)}.csv`, csv);
+}
+
 // Backup full store to JSON
 export function exportFullBackupJson(data) {
   const jsonStr = JSON.stringify(data, null, 2);
