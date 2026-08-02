@@ -1,39 +1,106 @@
 /*
- * responsive.css - Responsive Adjustments for Mobile & Tablet Screens
+ * responsive.css - Modern Mobile & Tablet Responsive Optimization
+ * Designed for Computer Engineering Academic Hub
  */
 
-@media (max-width: 1024px) {
-  .dashboard-layout-grid {
-    grid-template-columns: 1fr;
+/* Touch & Mobile Interactivity Improvements */
+@media (hover: none) and (pointer: coarse) {
+  .btn, .nav-tab, .role-btn, .action-btn, input, select {
+    min-height: 42px;
+    touch-action: manipulation;
   }
+}
 
+/* Tablet & Medium Devices (max-width: 1024px) */
+@media (max-width: 1024px) {
   .navbar {
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
-    padding: 14px 20px;
+    padding: 14px 18px;
   }
 
   .navbar-left {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 14px;
+    width: 100%;
+  }
+
+  .brand {
+    justify-content: flex-start;
+  }
+
+  .nav-tabs {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding: 4px;
+    scrollbar-width: none; /* Hide scrollbar for Chrome/Firefox */
+  }
+
+  .nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    font-size: 0.85rem;
+    padding: 8px 14px;
   }
 
   .navbar-right {
     flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
     justify-content: space-between;
   }
 
+  .role-selector-container {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .role-pill-group {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .role-pill-group::-webkit-scrollbar {
+    display: none;
+  }
+
+  .role-btn {
+    flex: 1;
+    white-space: nowrap;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .dashboard-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .timetable-grid {
-    grid-template-columns: repeat(3, minmax(220px, 1fr));
-    min-width: unset;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
   }
 }
 
+/* Mobile Devices (max-width: 768px) */
 @media (max-width: 768px) {
   .main-content {
-    padding: 16px 14px;
+    padding: 14px 10px;
   }
 
   .view-header {
@@ -42,36 +109,199 @@
     gap: 12px;
   }
 
+  .view-header h2 {
+    font-size: 1.35rem;
+  }
+
   .view-header-right {
     width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .config-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .attendance-summary-bar {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
+  }
+
+  .view-header-right .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .kpi-card {
+    padding: 16px 14px;
+  }
+
+  .kpi-value {
+    font-size: 1.8rem;
+  }
+
+  .kpi-title {
+    font-size: 0.78rem;
+  }
+
+  .kpi-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .timetable-grid-container {
+    padding: 12px;
   }
 
   .timetable-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .day-column {
+    border-radius: var(--radius-md);
+  }
+
+  .event-card {
+    padding: 12px;
+  }
+
+  .event-card-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .event-card-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Table Mobile Touch Support */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-md);
+  }
+
+  .data-table {
+    min-width: 600px;
+  }
+
+  .data-table th, .data-table td {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+
+  /* Attendance Register Sticky Left Student Identifier for Mobile Scrolling */
+  .attendance-table-wrapper {
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .attendance-table th:first-child,
+  .attendance-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--bg-card);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .attendance-summary-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .summary-stat-pills {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  /* Modal Mobile Bottom Sheet / Dialog Optimization */
+  .modal-backdrop {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 18px 16px;
+    overflow-y: auto;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .full-width {
     grid-column: span 1;
   }
 
-  .role-selector-container {
-    flex-direction: column;
-    align-items: flex-start;
+  /* Student Roster Mobile Cards */
+  .student-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .student-card {
+    padding: 14px;
+  }
+
+  .action-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Small Smartphone Screen (< 480px) */
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.68rem;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .role-btn {
+    font-size: 0.75rem;
+    padding: 6px 8px;
   }
 }
