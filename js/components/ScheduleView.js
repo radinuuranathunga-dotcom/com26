@@ -14,6 +14,63 @@ export function renderScheduleView(container) {
   let filterType = 'all'; // 'all' | 'lecture' | 'lab'
   let filterYear = 'all'; // 'all' | '1' | '2' | '3' | '4'
   let searchQuery = '';
+  let matrixGroupFilter = 'all';
+
+  function renderScheduleMatrixRows(groupFilter = 'all') {
+    const timetable = store.ceLabTimetable;
+    const dateMap = {};
+
+    timetable.forEach(item => {
+      const key = `${item.date}_${item.time}`;
+      if (!dateMap[key]) {
+        dateMap[key] = { date: item.date, time: item.time, EC3301: null, EC3203: null, EC3305: null };
+      }
+      dateMap[key][item.courseCode] = item;
+    });
+
+    return Object.values(dateMap).map(row => {
+      const checkMatch = (item) => {
+        if (!item) return false;
+        if (groupFilter === 'all') return true;
+        if (item.groups === 'ALL') return true;
+        if (Array.isArray(item.groups)) return item.groups.includes(groupFilter);
+        return false;
+      };
+
+      const is3301Match = checkMatch(row.EC3301);
+      const is3203Match = checkMatch(row.EC3203);
+      const is3305Match = checkMatch(row.EC3305);
+      const isAnyMatch = groupFilter === 'all' || is3301Match || is3203Match || is3305Match;
+
+      return `
+        <tr style="${!isAnyMatch && groupFilter !== 'all' ? 'opacity: 0.3;' : ''}">
+          <td class="font-bold text-cyan">${row.date}</td>
+          <td class="font-mono font-xs text-muted">${row.time}</td>
+          <td>
+            ${row.EC3301 ? `
+              <div style="${is3301Match && groupFilter !== 'all' ? 'background: rgba(16, 185, 129, 0.2); padding: 4px 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);' : ''}">
+                <strong class="${is3301Match && groupFilter !== 'all' ? 'text-emerald' : ''}">${row.EC3301.labNumber}:</strong> ${row.EC3301.groupText}
+              </div>
+            ` : '<span class="text-muted">-</span>'}
+          </td>
+          <td>
+            ${row.EC3203 ? `
+              <div style="${is3203Match && groupFilter !== 'all' ? 'background: rgba(16, 185, 129, 0.2); padding: 4px 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);' : ''}">
+                <strong class="${is3203Match && groupFilter !== 'all' ? 'text-emerald' : ''}">${row.EC3203.labNumber}:</strong> ${row.EC3203.groupText}
+              </div>
+            ` : '<span class="text-muted">-</span>'}
+          </td>
+          <td>
+            ${row.EC3305 ? `
+              <div style="${is3305Match && groupFilter !== 'all' ? 'background: rgba(16, 185, 129, 0.2); padding: 4px 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);' : ''}">
+                <strong class="${is3305Match && groupFilter !== 'all' ? 'text-emerald' : ''}">${row.EC3305.labNumber}:</strong> ${row.EC3305.groupText}
+              </div>
+            ` : '<span class="text-muted">-</span>'}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
 
   function render() {
     // Filter logic
@@ -197,6 +254,44 @@ export function renderScheduleView(container) {
         </div>
       </div>
 
+      <!-- Official CE Group Lab Timetable Matrix -->
+      <div class="card ce-lab-schedule-matrix-card mt-4 pad-md animate-fade-in" style="border: 1px solid var(--accent-indigo);">
+        <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 class="text-indigo" style="margin: 0;">🗓️ Semester 3 Computer Engineering (CE) Group Lab Schedule</h3>
+            <p class="sub-text font-xs text-muted" style="margin: 2px 0 0 0;">Official lab dates & time allocations for all 34 CE Groups (CE01 - CE34). Filter by group or search Student ID to highlight your sessions.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <label class="font-xs font-bold text-cyan" style="white-space: nowrap;">Filter by Lab Group:</label>
+            <select id="schedule-matrix-group-select" class="form-select-sm">
+              <option value="all">All Groups (CE01 - CE34)</option>
+              ${store.labGroups.map(g => `<option value="${g.id}">${g.id} (${g.leaderName})</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 110px;">Date</th>
+                <th style="width: 140px;">Time</th>
+                <th>EC3301 Analog Electronics</th>
+                <th>EC3203 Measurements</th>
+                <th>EC3305 Signals & Systems</th>
+              </tr>
+            </thead>
+            <tbody id="ce-schedule-matrix-tbody">
+              ${renderScheduleMatrixRows('all')}
+            </tbody>
+          </table>
+        </div>
+        <div class="font-xs text-muted mt-2">
+          * Note: August 26, September 16, and September 18 are recess/holidays and are omitted. Sessions marked "All Groups" apply to all 34 CE Groups.
+        </div>
+      </div>
+
       <!-- Official Computer Engineering Laboratory Experiments Table -->
       <div class="card official-labs-card mt-4 pad-md animate-fade-in">
         <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -317,6 +412,17 @@ export function renderScheduleView(container) {
       searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
         render();
+      });
+    }
+
+    // CE Lab Timetable Matrix Group Filter
+    const matrixGroupSelect = container.querySelector('#schedule-matrix-group-select');
+    if (matrixGroupSelect) {
+      matrixGroupSelect.value = matrixGroupFilter;
+      matrixGroupSelect.addEventListener('change', (e) => {
+        matrixGroupFilter = e.target.value;
+        const tbody = container.querySelector('#ce-schedule-matrix-tbody');
+        if (tbody) tbody.innerHTML = renderScheduleMatrixRows(matrixGroupFilter);
       });
     }
 

@@ -582,5 +582,71 @@ export const INITIAL_MOCK_DATA = {
         "EG/2024/6014": { status: "Present", notes: "Completed Exercise 3" }
       }
     }
+  ],
+
+  // Official Semester 3 CE Group Lab Timetable (August - October 2026)
+  ceLabTimetable: [
+    { id: "TT-01", date: "05/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+    { id: "TT-02", date: "05/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-03", date: "07/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE01","CE02","CE03","CE04","CE05","CE06","CE07","CE08"], groupText: "CE01 to CE08" },
+    { id: "TT-04", date: "07/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+    { id: "TT-05", date: "07/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+
+    { id: "TT-06", date: "12/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE09","CE10","CE11","CE12","CE13","CE14","CE15","CE16","CE17","CE18"], groupText: "CE09 to CE18" },
+    { id: "TT-07", date: "12/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-08", date: "14/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE19","CE20","CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE19 to CE28" },
+    { id: "TT-09", date: "14/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-10", date: "14/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+
+    { id: "TT-11", date: "19/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-12", date: "19/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+
+    { id: "TT-13", date: "21/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE05","CE06"], groupText: "CE05, CE06" },
+    { id: "TT-14", date: "21/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+    { id: "TT-15", date: "21/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-16", date: "02/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 2", groups: "ALL", groupText: "All Groups" },
+
+    { id: "TT-17", date: "04/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20","CE21","CE22"], groupText: "CE13 to CE22" },
+    { id: "TT-18", date: "04/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+
+    { id: "TT-19", date: "09/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE23","CE24","CE25","CE26","CE27","CE28","CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE23 to CE34" },
+    { id: "TT-20", date: "09/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+    { id: "TT-21", date: "09/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-22", date: "11/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE01","CE02","CE03","CE04","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE01 to CE04, CE07 to CE12" },
+    { id: "TT-23", date: "11/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-24", date: "23/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+    { id: "TT-25", date: "23/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-26", date: "25/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE01","CE02","CE03","CE04","CE05","CE06","CE07","CE08"], groupText: "CE01 to CE08" },
+    { id: "TT-27", date: "25/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+    { id: "TT-28", date: "25/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+
+    { id: "TT-29", date: "30/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE09","CE10","CE11","CE12","CE13","CE14","CE15","CE16","CE17","CE18"], groupText: "CE09 to CE18" },
+    { id: "TT-30", date: "30/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-31", date: "30/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+
+    { id: "TT-32", date: "02/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE19","CE20","CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE19 to CE28" },
+    { id: "TT-33", date: "02/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+
+    { id: "TT-34", date: "07/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 4", groups: "ALL", groupText: "All Groups" },
+
+    { id: "TT-35", date: "09/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-36", date: "09/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-37", date: "14/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE05","CE06"], groupText: "CE05, CE06" },
+    { id: "TT-38", date: "14/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-39", date: "16/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20","CE21","CE22"], groupText: "CE13 to CE22" },
+
+    { id: "TT-40", date: "21/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE23","CE24","CE25","CE26","CE27","CE28","CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE23 to CE34" },
+    { id: "TT-41", date: "21/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+
+    { id: "TT-42", date: "23/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE01","CE02","CE03","CE04","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE01 to CE04, CE07 to CE12" },
+    { id: "TT-43", date: "23/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" }
   ]
 };

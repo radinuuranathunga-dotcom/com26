@@ -612,6 +612,44 @@ class Store {
   get labGroups() { return (this.data && this.data.labGroups) ? this.data.labGroups : []; }
   get students() { return (this.data && this.data.students) ? this.data.students : []; }
   get attendanceLogs() { return (this.data && this.data.attendanceLogs) ? this.data.attendanceLogs : []; }
+  get ceLabTimetable() { return (this.data && this.data.ceLabTimetable) ? this.data.ceLabTimetable : (INITIAL_MOCK_DATA.ceLabTimetable || []); }
+
+  // Get personalized student lab schedule by Registration ID (e.g. EG/2023/5999) or Group Code (e.g. CE01)
+  getStudentLabSchedule(query) {
+    if (!query) return [];
+    const cleanQuery = query.trim().toUpperCase();
+
+    let targetGroup = '';
+    const foundStudent = this.students.find(s => 
+      s.id.toUpperCase() === cleanQuery || 
+      s.id.replace(/[\/\s]/g, '').toUpperCase() === cleanQuery.replace(/[\/\s]/g, '') ||
+      s.name.toUpperCase().includes(cleanQuery)
+    );
+
+    if (foundStudent) {
+      targetGroup = foundStudent.labGroup;
+    } else if (cleanQuery.startsWith('CE')) {
+      targetGroup = cleanQuery;
+    } else {
+      const matchGroup = this.labGroups.find(g => g.id.toUpperCase() === cleanQuery);
+      if (matchGroup) targetGroup = matchGroup.id;
+    }
+
+    if (!targetGroup) return [];
+
+    return this.ceLabTimetable.filter(entry => {
+      if (entry.groups === "ALL") return true;
+      if (Array.isArray(entry.groups)) {
+        return entry.groups.includes(targetGroup);
+      }
+      return false;
+    }).map(entry => ({
+      ...entry,
+      studentGroup: targetGroup,
+      studentName: foundStudent ? foundStudent.name : null,
+      studentId: foundStudent ? foundStudent.id : null
+    }));
+  }
 }
 
 export const store = new Store();

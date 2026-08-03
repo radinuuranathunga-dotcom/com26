@@ -2,7 +2,7 @@
  * StudentsView.js - Roster & Academic Records for 195 Department Students
  */
 import { store } from '../store.js';
-import { openStudentModal, openAddStudentModal, openDeleteStudentConfirmModal } from './ModalManager.js';
+import { openStudentModal, openAddStudentModal, openDeleteStudentConfirmModal, openStudentScheduleModal } from './ModalManager.js';
 import { exportStudentsCsv } from '../utils/exportImport.js';
 
 export function renderStudentsView(container) {
@@ -55,6 +55,20 @@ export function renderStudentsView(container) {
               📥 Export Roster CSV
             </button>
           ` : ''}
+        </div>
+      </div>
+
+      <!-- Quick Student ID Lab Dates Lookup Tool -->
+      <div class="card p-3 mb-4" style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--accent-indigo); border-radius: 12px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+          <div>
+            <h4 style="margin: 0; font-size: 1.05rem;" class="text-cyan">🗓️ Quick Student ID Lab Schedule Search</h4>
+            <p class="font-xs text-muted" style="margin: 2px 0 0 0;">Enter any Student Registration ID (e.g. <code>EG/2023/5999</code> or <code>EG/2024/6016</code>) or Group (e.g. <code>CE01</code>) to view assigned lab dates & times.</p>
+          </div>
+          <form id="quick-schedule-search-form" style="display: flex; gap: 8px; flex: 1; max-width: 420px;">
+            <input type="text" id="quick-schedule-input" class="form-input-sm w-100" placeholder="e.g. EG/2023/5999 or CE01" required>
+            <button type="submit" class="btn btn-sm btn-indigo" style="white-space: nowrap;">🔍 Check Dates</button>
+          </form>
         </div>
       </div>
 
@@ -131,7 +145,10 @@ export function renderStudentsView(container) {
                     <span class="font-bold text-cyan">${st.labsCompleted || 0}</span> / ${st.totalLabs || 10} Sessions
                   </td>
                   <td>
-                    <div style="display: flex; gap: 4px;">
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                      <button class="btn btn-xs btn-outline-cyan view-schedule-btn" data-id="${st.id}">
+                        🗓️ Lab Dates
+                      </button>
                       <button class="btn btn-xs btn-outline view-student-btn" data-id="${st.id}">
                         👤 Profile
                       </button>
@@ -207,6 +224,21 @@ export function renderStudentsView(container) {
       btn.addEventListener('click', () => {
         const student = students.find(s => s.id === btn.dataset.id);
         if (student) openDeleteStudentConfirmModal(student);
+      });
+    });
+
+    const quickForm = container.querySelector('#quick-schedule-search-form');
+    if (quickForm) {
+      quickForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inputVal = container.querySelector('#quick-schedule-input').value;
+        if (inputVal) openStudentScheduleModal(inputVal);
+      });
+    }
+
+    container.querySelectorAll('.view-schedule-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        openStudentScheduleModal(btn.dataset.id);
       });
     });
 

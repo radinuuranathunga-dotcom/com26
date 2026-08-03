@@ -865,3 +865,82 @@ export function openDeleteConfirmModal(message, onConfirm) {
     closeModal();
   });
 }
+
+export function openStudentScheduleModal(query) {
+  const modalContainer = document.getElementById('modal-portal');
+  if (!modalContainer) return;
+
+  const schedule = store.getStudentLabSchedule(query);
+  const student = store.students.find(s => 
+    s.id.toUpperCase() === String(query).trim().toUpperCase() || 
+    s.id.replace(/[\/\s]/g, '').toUpperCase() === String(query).replace(/[\/\s]/g, '').toUpperCase()
+  ) || (schedule.length > 0 ? { id: schedule[0].studentId || query, name: schedule[0].studentName || query, labGroup: schedule[0].studentGroup } : null);
+
+  const groupCode = student ? student.labGroup : (query.toUpperCase().startsWith('CE') ? query.toUpperCase() : 'CE01');
+  const studentName = student ? student.name : `Group ${groupCode} Student`;
+  const studentId = student ? student.id : query;
+
+  modalContainer.innerHTML = `
+    <div class="modal-backdrop animate-fade-in">
+      <div class="modal-card animate-scale-up" style="max-width: 840px;">
+        <div class="modal-header bg-secondary p-3" style="border-bottom: 1px solid var(--border-color);">
+          <div>
+            <h3 style="margin: 0; font-size: 1.25rem;">🗓️ Practical Lab Schedule for ${escapeHtml(studentName)}</h3>
+            <p class="sub-text font-sm" style="margin: 4px 0 0 0;">
+              Student ID: <strong class="font-mono text-cyan">${escapeHtml(studentId)}</strong> | Assigned Lab Group: <span class="group-tag">${escapeHtml(groupCode)}</span>
+            </p>
+          </div>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body pad-md">
+          ${schedule.length === 0 ? `
+            <div class="empty-state p-4 text-center">
+              <p class="font-lg text-secondary">No lab sessions found for query "<strong>${escapeHtml(query)}</strong>".</p>
+              <p class="font-xs text-muted">Please enter a valid Registration ID (e.g. EG/2023/5999 or EG/2024/6016) or Lab Group (e.g. CE01 to CE34).</p>
+            </div>
+          ` : `
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Module Code & Name</th>
+                    <th>Lab Experiment</th>
+                    <th>Assigned Group Range</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${schedule.map(session => `
+                    <tr>
+                      <td class="font-bold text-cyan">${escapeHtml(session.date)}</td>
+                      <td class="font-mono font-xs text-muted">${escapeHtml(session.time)}</td>
+                      <td>
+                        <strong class="text-primary">${escapeHtml(session.courseCode)}</strong>
+                        <div class="font-xs text-secondary">${escapeHtml(session.courseName)}</div>
+                      </td>
+                      <td><span class="badge badge-leader">${escapeHtml(session.labNumber)}</span></td>
+                      <td class="font-xs text-muted">${escapeHtml(session.groupText)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+
+        <div class="modal-footer p-3 bg-secondary">
+          <button type="button" class="btn btn-outline modal-cancel-btn">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const closeBtn = modalContainer.querySelector('.modal-close-btn');
+  const cancelBtn = modalContainer.querySelector('.modal-cancel-btn');
+  const closeModal = () => modalContainer.innerHTML = '';
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+}

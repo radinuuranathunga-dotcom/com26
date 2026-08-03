@@ -825,6 +825,72 @@ const INITIAL_MOCK_DATA = {
         "EG/2024/6014": { status: "Present", notes: "Completed Exercise 3" }
       }
     }
+  ],
+
+  // Official Semester 3 CE Group Lab Timetable (August - October 2026)
+  ceLabTimetable: [
+    { id: "TT-01", date: "05/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+    { id: "TT-02", date: "05/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-03", date: "07/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE01","CE02","CE03","CE04","CE05","CE06","CE07","CE08"], groupText: "CE01 to CE08" },
+    { id: "TT-04", date: "07/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+    { id: "TT-05", date: "07/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+
+    { id: "TT-06", date: "12/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE09","CE10","CE11","CE12","CE13","CE14","CE15","CE16","CE17","CE18"], groupText: "CE09 to CE18" },
+    { id: "TT-07", date: "12/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-08", date: "14/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE19","CE20","CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE19 to CE28" },
+    { id: "TT-09", date: "14/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-10", date: "14/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+
+    { id: "TT-11", date: "19/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 1", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-12", date: "19/08/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+
+    { id: "TT-13", date: "21/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE05","CE06"], groupText: "CE05, CE06" },
+    { id: "TT-14", date: "21/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 1", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+    { id: "TT-15", date: "21/08/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 1", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-16", date: "02/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 2", groups: "ALL", groupText: "All Groups" },
+
+    { id: "TT-17", date: "04/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20","CE21","CE22"], groupText: "CE13 to CE22" },
+    { id: "TT-18", date: "04/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+
+    { id: "TT-19", date: "09/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE23","CE24","CE25","CE26","CE27","CE28","CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE23 to CE34" },
+    { id: "TT-20", date: "09/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+    { id: "TT-21", date: "09/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-22", date: "11/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 2", groups: ["CE01","CE02","CE03","CE04","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE01 to CE04, CE07 to CE12" },
+    { id: "TT-23", date: "11/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-24", date: "23/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+    { id: "TT-25", date: "23/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-26", date: "25/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE01","CE02","CE03","CE04","CE05","CE06","CE07","CE08"], groupText: "CE01 to CE08" },
+    { id: "TT-27", date: "25/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+    { id: "TT-28", date: "25/09/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+
+    { id: "TT-29", date: "30/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE09","CE10","CE11","CE12","CE13","CE14","CE15","CE16","CE17","CE18"], groupText: "CE09 to CE18" },
+    { id: "TT-30", date: "30/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 2", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-31", date: "30/09/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 3", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+
+    { id: "TT-32", date: "02/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE19","CE20","CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE19 to CE28" },
+    { id: "TT-33", date: "02/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE05","CE06","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE05 to CE12" },
+
+    { id: "TT-34", date: "07/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3305", courseName: "Signals and Systems", labNumber: "Lab 4", groups: "ALL", groupText: "All Groups" },
+
+    { id: "TT-35", date: "09/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 3", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" },
+    { id: "TT-36", date: "09/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20"], groupText: "CE13 to CE20" },
+
+    { id: "TT-37", date: "14/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE05","CE06"], groupText: "CE05, CE06" },
+    { id: "TT-38", date: "14/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE21","CE22","CE23","CE24","CE25","CE26","CE27","CE28"], groupText: "CE21 to CE28" },
+
+    { id: "TT-39", date: "16/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE13","CE14","CE15","CE16","CE17","CE18","CE19","CE20","CE21","CE22"], groupText: "CE13 to CE22" },
+
+    { id: "TT-40", date: "21/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE23","CE24","CE25","CE26","CE27","CE28","CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE23 to CE34" },
+    { id: "TT-41", date: "21/10/2026", time: "8.30 a.m. - 11.30 a.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE01","CE02","CE03","CE04"], groupText: "CE01 to CE04" },
+
+    { id: "TT-42", date: "23/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3301", courseName: "Analog Electronics", labNumber: "Lab 4", groups: ["CE01","CE02","CE03","CE04","CE07","CE08","CE09","CE10","CE11","CE12"], groupText: "CE01 to CE04, CE07 to CE12" },
+    { id: "TT-43", date: "23/10/2026", time: "1.30 p.m. - 4.30 p.m.", courseCode: "EC3203", courseName: "Electrical and Electronic Measurements", labNumber: "Lab 3", groups: ["CE29","CE30","CE31","CE32","CE33","CE34"], groupText: "CE29 to CE34" }
   ]
 };
 
@@ -1441,6 +1507,44 @@ class Store {
   get labGroups() { return (this.data && this.data.labGroups) ? this.data.labGroups : []; }
   get students() { return (this.data && this.data.students) ? this.data.students : []; }
   get attendanceLogs() { return (this.data && this.data.attendanceLogs) ? this.data.attendanceLogs : []; }
+  get ceLabTimetable() { return (this.data && this.data.ceLabTimetable) ? this.data.ceLabTimetable : (INITIAL_MOCK_DATA.ceLabTimetable || []); }
+
+  // Get personalized student lab schedule by Registration ID (e.g. EG/2023/5999) or Group Code (e.g. CE01)
+  getStudentLabSchedule(query) {
+    if (!query) return [];
+    const cleanQuery = query.trim().toUpperCase();
+
+    let targetGroup = '';
+    const foundStudent = this.students.find(s => 
+      s.id.toUpperCase() === cleanQuery || 
+      s.id.replace(/[\/\s]/g, '').toUpperCase() === cleanQuery.replace(/[\/\s]/g, '') ||
+      s.name.toUpperCase().includes(cleanQuery)
+    );
+
+    if (foundStudent) {
+      targetGroup = foundStudent.labGroup;
+    } else if (cleanQuery.startsWith('CE')) {
+      targetGroup = cleanQuery;
+    } else {
+      const matchGroup = this.labGroups.find(g => g.id.toUpperCase() === cleanQuery);
+      if (matchGroup) targetGroup = matchGroup.id;
+    }
+
+    if (!targetGroup) return [];
+
+    return this.ceLabTimetable.filter(entry => {
+      if (entry.groups === "ALL") return true;
+      if (Array.isArray(entry.groups)) {
+        return entry.groups.includes(targetGroup);
+      }
+      return false;
+    }).map(entry => ({
+      ...entry,
+      studentGroup: targetGroup,
+      studentName: foundStudent ? foundStudent.name : null,
+      studentId: foundStudent ? foundStudent.id : null
+    }));
+  }
 }
 const store = new Store();
 
@@ -2507,6 +2611,84 @@ function openDeleteConfirmModal(message, onConfirm) {
     closeModal();
   });
 }
+function openStudentScheduleModal(query) {
+  const modalContainer = document.getElementById('modal-portal');
+  if (!modalContainer) return;
+
+  const schedule = store.getStudentLabSchedule(query);
+  const student = store.students.find(s => 
+    s.id.toUpperCase() === String(query).trim().toUpperCase() || 
+    s.id.replace(/[\/\s]/g, '').toUpperCase() === String(query).replace(/[\/\s]/g, '').toUpperCase()
+  ) || (schedule.length > 0 ? { id: schedule[0].studentId || query, name: schedule[0].studentName || query, labGroup: schedule[0].studentGroup } : null);
+
+  const groupCode = student ? student.labGroup : (query.toUpperCase().startsWith('CE') ? query.toUpperCase() : 'CE01');
+  const studentName = student ? student.name : `Group ${groupCode} Student`;
+  const studentId = student ? student.id : query;
+
+  modalContainer.innerHTML = `
+    <div class="modal-backdrop animate-fade-in">
+      <div class="modal-card animate-scale-up" style="max-width: 840px;">
+        <div class="modal-header bg-secondary p-3" style="border-bottom: 1px solid var(--border-color);">
+          <div>
+            <h3 style="margin: 0; font-size: 1.25rem;">🗓️ Practical Lab Schedule for ${escapeHtml(studentName)}</h3>
+            <p class="sub-text font-sm" style="margin: 4px 0 0 0;">
+              Student ID: <strong class="font-mono text-cyan">${escapeHtml(studentId)}</strong> | Assigned Lab Group: <span class="group-tag">${escapeHtml(groupCode)}</span>
+            </p>
+          </div>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body pad-md">
+          ${schedule.length === 0 ? `
+            <div class="empty-state p-4 text-center">
+              <p class="font-lg text-secondary">No lab sessions found for query "<strong>${escapeHtml(query)}</strong>".</p>
+              <p class="font-xs text-muted">Please enter a valid Registration ID (e.g. EG/2023/5999 or EG/2024/6016) or Lab Group (e.g. CE01 to CE34).</p>
+            </div>
+          ` : `
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Module Code & Name</th>
+                    <th>Lab Experiment</th>
+                    <th>Assigned Group Range</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${schedule.map(session => `
+                    <tr>
+                      <td class="font-bold text-cyan">${escapeHtml(session.date)}</td>
+                      <td class="font-mono font-xs text-muted">${escapeHtml(session.time)}</td>
+                      <td>
+                        <strong class="text-primary">${escapeHtml(session.courseCode)}</strong>
+                        <div class="font-xs text-secondary">${escapeHtml(session.courseName)}</div>
+                      </td>
+                      <td><span class="badge badge-leader">${escapeHtml(session.labNumber)}</span></td>
+                      <td class="font-xs text-muted">${escapeHtml(session.groupText)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+
+        <div class="modal-footer p-3 bg-secondary">
+          <button type="button" class="btn btn-outline modal-cancel-btn">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const closeBtn = modalContainer.querySelector('.modal-close-btn');
+  const cancelBtn = modalContainer.querySelector('.modal-cancel-btn');
+  const closeModal = () => modalContainer.innerHTML = '';
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+}
 
 
 // --- File: js/components/DashboardView.js ---
@@ -2861,6 +3043,63 @@ function renderScheduleView(container) {
   let filterType = 'all'; // 'all' | 'lecture' | 'lab'
   let filterYear = 'all'; // 'all' | '1' | '2' | '3' | '4'
   let searchQuery = '';
+  let matrixGroupFilter = 'all';
+
+  function renderScheduleMatrixRows(groupFilter = 'all') {
+    const timetable = store.ceLabTimetable;
+    const dateMap = {};
+
+    timetable.forEach(item => {
+      const key = `${item.date}_${item.time}`;
+      if (!dateMap[key]) {
+        dateMap[key] = { date: item.date, time: item.time, EC3301: null, EC3203: null, EC3305: null };
+      }
+      dateMap[key][item.courseCode] = item;
+    });
+
+    return Object.values(dateMap).map(row => {
+      const checkMatch = (item) => {
+        if (!item) return false;
+        if (groupFilter === 'all') return true;
+        if (item.groups === 'ALL') return true;
+        if (Array.isArray(item.groups)) return item.groups.includes(groupFilter);
+        return false;
+      };
+
+      const is3301Match = checkMatch(row.EC3301);
+      const is3203Match = checkMatch(row.EC3203);
+      const is3305Match = checkMatch(row.EC3305);
+      const isAnyMatch = groupFilter === 'all' || is3301Match || is3203Match || is3305Match;
+
+      return `
+        <tr style="${!isAnyMatch && groupFilter !== 'all' ? 'opacity: 0.3;' : ''}">
+          <td class="font-bold text-cyan">${row.date}</td>
+          <td class="font-mono font-xs text-muted">${row.time}</td>
+          <td>
+            ${row.EC3301 ? `
+              <div style="${is3301Match && groupFilter !== 'all' ? 'background: rgba(16, 185, 129, 0.2); padding: 4px 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);' : ''}">
+                <strong class="${is3301Match && groupFilter !== 'all' ? 'text-emerald' : ''}">${row.EC3301.labNumber}:</strong> ${row.EC3301.groupText}
+              </div>
+            ` : '<span class="text-muted">-</span>'}
+          </td>
+          <td>
+            ${row.EC3203 ? `
+              <div style="${is3203Match && groupFilter !== 'all' ? 'background: rgba(16, 185, 129, 0.2); padding: 4px 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);' : ''}">
+                <strong class="${is3203Match && groupFilter !== 'all' ? 'text-emerald' : ''}">${row.EC3203.labNumber}:</strong> ${row.EC3203.groupText}
+              </div>
+            ` : '<span class="text-muted">-</span>'}
+          </td>
+          <td>
+            ${row.EC3305 ? `
+              <div style="${is3305Match && groupFilter !== 'all' ? 'background: rgba(16, 185, 129, 0.2); padding: 4px 8px; border-radius: 6px; border-left: 3px solid var(--accent-emerald);' : ''}">
+                <strong class="${is3305Match && groupFilter !== 'all' ? 'text-emerald' : ''}">${row.EC3305.labNumber}:</strong> ${row.EC3305.groupText}
+              </div>
+            ` : '<span class="text-muted">-</span>'}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
 
   function render() {
     // Filter logic
@@ -3044,6 +3283,44 @@ function renderScheduleView(container) {
         </div>
       </div>
 
+      <!-- Official CE Group Lab Timetable Matrix -->
+      <div class="card ce-lab-schedule-matrix-card mt-4 pad-md animate-fade-in" style="border: 1px solid var(--accent-indigo);">
+        <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 class="text-indigo" style="margin: 0;">🗓️ Semester 3 Computer Engineering (CE) Group Lab Schedule</h3>
+            <p class="sub-text font-xs text-muted" style="margin: 2px 0 0 0;">Official lab dates & time allocations for all 34 CE Groups (CE01 - CE34). Filter by group or search Student ID to highlight your sessions.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <label class="font-xs font-bold text-cyan" style="white-space: nowrap;">Filter by Lab Group:</label>
+            <select id="schedule-matrix-group-select" class="form-select-sm">
+              <option value="all">All Groups (CE01 - CE34)</option>
+              ${store.labGroups.map(g => `<option value="${g.id}">${g.id} (${g.leaderName})</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 110px;">Date</th>
+                <th style="width: 140px;">Time</th>
+                <th>EC3301 Analog Electronics</th>
+                <th>EC3203 Measurements</th>
+                <th>EC3305 Signals & Systems</th>
+              </tr>
+            </thead>
+            <tbody id="ce-schedule-matrix-tbody">
+              ${renderScheduleMatrixRows('all')}
+            </tbody>
+          </table>
+        </div>
+        <div class="font-xs text-muted mt-2">
+          * Note: August 26, September 16, and September 18 are recess/holidays and are omitted. Sessions marked "All Groups" apply to all 34 CE Groups.
+        </div>
+      </div>
+
       <!-- Official Computer Engineering Laboratory Experiments Table -->
       <div class="card official-labs-card mt-4 pad-md animate-fade-in">
         <div class="card-header-flex mb-3" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -3164,6 +3441,17 @@ function renderScheduleView(container) {
       searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
         render();
+      });
+    }
+
+    // CE Lab Timetable Matrix Group Filter
+    const matrixGroupSelect = container.querySelector('#schedule-matrix-group-select');
+    if (matrixGroupSelect) {
+      matrixGroupSelect.value = matrixGroupFilter;
+      matrixGroupSelect.addEventListener('change', (e) => {
+        matrixGroupFilter = e.target.value;
+        const tbody = container.querySelector('#ce-schedule-matrix-tbody');
+        if (tbody) tbody.innerHTML = renderScheduleMatrixRows(matrixGroupFilter);
       });
     }
 
@@ -4068,6 +4356,20 @@ function renderStudentsView(container) {
         </div>
       </div>
 
+      <!-- Quick Student ID Lab Dates Lookup Tool -->
+      <div class="card p-3 mb-4" style="background: rgba(30, 41, 59, 0.6); border: 1px solid var(--accent-indigo); border-radius: 12px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+          <div>
+            <h4 style="margin: 0; font-size: 1.05rem;" class="text-cyan">🗓️ Quick Student ID Lab Schedule Search</h4>
+            <p class="font-xs text-muted" style="margin: 2px 0 0 0;">Enter any Student Registration ID (e.g. <code>EG/2023/5999</code> or <code>EG/2024/6016</code>) or Group (e.g. <code>CE01</code>) to view assigned lab dates & times.</p>
+          </div>
+          <form id="quick-schedule-search-form" style="display: flex; gap: 8px; flex: 1; max-width: 420px;">
+            <input type="text" id="quick-schedule-input" class="form-input-sm w-100" placeholder="e.g. EG/2023/5999 or CE01" required>
+            <button type="submit" class="btn btn-sm btn-indigo" style="white-space: nowrap;">🔍 Check Dates</button>
+          </form>
+        </div>
+      </div>
+
       <!-- Filter Controls -->
       <div class="filter-toolbar card">
         <div class="filter-group">
@@ -4141,7 +4443,10 @@ function renderStudentsView(container) {
                     <span class="font-bold text-cyan">${st.labsCompleted || 0}</span> / ${st.totalLabs || 10} Sessions
                   </td>
                   <td>
-                    <div style="display: flex; gap: 4px;">
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                      <button class="btn btn-xs btn-outline-cyan view-schedule-btn" data-id="${st.id}">
+                        🗓️ Lab Dates
+                      </button>
                       <button class="btn btn-xs btn-outline view-student-btn" data-id="${st.id}">
                         👤 Profile
                       </button>
@@ -4217,6 +4522,21 @@ function renderStudentsView(container) {
       btn.addEventListener('click', () => {
         const student = students.find(s => s.id === btn.dataset.id);
         if (student) openDeleteStudentConfirmModal(student);
+      });
+    });
+
+    const quickForm = container.querySelector('#quick-schedule-search-form');
+    if (quickForm) {
+      quickForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inputVal = container.querySelector('#quick-schedule-input').value;
+        if (inputVal) openStudentScheduleModal(inputVal);
+      });
+    }
+
+    container.querySelectorAll('.view-schedule-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        openStudentScheduleModal(btn.dataset.id);
       });
     });
 
