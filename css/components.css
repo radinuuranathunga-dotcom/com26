@@ -599,6 +599,10 @@
   gap: 24px;
 }
 
+.dashboard-layout-grid.single-column-grid {
+  grid-template-columns: 1fr;
+}
+
 .group-bars-list {
   display: flex;
   flex-direction: column;

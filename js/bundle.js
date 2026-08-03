@@ -2588,88 +2588,86 @@ function renderDashboardView(container) {
     </div>
 
     <!-- Dashboard Content Layout Grid -->
-    <div class="dashboard-layout-grid">
+    <div class="dashboard-layout-grid ${!isAdmin ? 'single-column-grid' : ''}">
       
-      <!-- Group Roster Summary (Desktop Table & Mobile Expandable Cards) -->
-      <div class="card chart-card">
-        <div class="card-header">
-          <h3 class="card-title">🧪 Laboratory Groups Overview (CE01 - CE34)</h3>
-          <span class="sub-text">${isAdmin ? '👑 Admin Mode: Click Edit Leader to reassign leaders' : 'Assigned Leaders & Rooms'}</span>
-        </div>
+      ${isAdmin ? `
+        <!-- Group Roster Summary (Admin Only: Desktop Table & Mobile Expandable Cards) -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <h3 class="card-title">🧪 Laboratory Groups Overview (CE01 - CE34)</h3>
+            <span class="sub-text">👑 Admin Mode: Click Edit Leader to reassign leaders</span>
+          </div>
 
-        <!-- Desktop Wide Table (Hidden on Mobile) -->
-        <div class="table-container desktop-table-wrapper mt-3">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Lab Group</th>
-                <th>Group Leader</th>
-                <th>Leader Student ID</th>
-                <th>Roster Count</th>
-                ${isAdmin ? '<th>Actions</th>' : ''}
-              </tr>
-            </thead>
-            <tbody>
-              ${groups.map(g => {
-                const count = groupCountMap[g.id] || 0;
-                return `
-                  <tr>
-                    <td><span class="group-tag">${g.id}</span></td>
-                    <td><span class="font-bold text-cyan">${g.leaderName}</span></td>
-                    <td class="font-mono text-muted">${g.leaderId || 'N/A'}</td>
-                    <td>${count} Students</td>
-                    ${isAdmin ? `
+          <!-- Desktop Wide Table (Hidden on Mobile) -->
+          <div class="table-container desktop-table-wrapper mt-3">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Lab Group</th>
+                  <th>Group Leader</th>
+                  <th>Leader Student ID</th>
+                  <th>Roster Count</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${groups.map(g => {
+                  const count = groupCountMap[g.id] || 0;
+                  return `
+                    <tr>
+                      <td><span class="group-tag">${g.id}</span></td>
+                      <td><span class="font-bold text-cyan">${g.leaderName}</span></td>
+                      <td class="font-mono text-muted">${g.leaderId || 'N/A'}</td>
+                      <td>${count} Students</td>
                       <td>
                         <button class="btn btn-xs btn-outline-cyan edit-dash-group-btn" data-id="${g.id}">
                           ✏️ Edit Leader
                         </button>
                       </td>
-                    ` : ''}
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
 
-        <!-- Mobile Expandable Cards List (Visible on Mobile Screens) -->
-        <div class="mobile-groups-card-list mt-3">
-          ${groups.map(g => {
-            const count = groupCountMap[g.id] || 0;
-            return `
-              <div class="mobile-group-card">
-                <div class="mobile-group-card-header">
-                  <div class="mobile-group-info-left">
-                    <span class="group-tag">${g.id}</span>
-                    <span class="font-bold text-cyan ml-2">${g.leaderName}</span>
+          <!-- Mobile Expandable Cards List (Visible on Mobile Screens) -->
+          <div class="mobile-groups-card-list mt-3">
+            ${groups.map(g => {
+              const count = groupCountMap[g.id] || 0;
+              return `
+                <div class="mobile-group-card">
+                  <div class="mobile-group-card-header">
+                    <div class="mobile-group-info-left">
+                      <span class="group-tag">${g.id}</span>
+                      <span class="font-bold text-cyan ml-2">${g.leaderName}</span>
+                    </div>
+                    <div class="mobile-group-info-right">
+                      <span class="badge badge-success">${count} Students</span>
+                      <span class="accordion-chevron">▼</span>
+                    </div>
                   </div>
-                  <div class="mobile-group-info-right">
-                    <span class="badge badge-success">${count} Students</span>
-                    <span class="accordion-chevron">▼</span>
-                  </div>
-                </div>
-                <div class="mobile-group-card-body hidden">
-                  <div class="mobile-detail-row">
-                    <span class="mobile-detail-label">Leader Student ID:</span>
-                    <span class="font-mono text-muted">${g.leaderId || 'N/A'}</span>
-                  </div>
-                  <div class="mobile-detail-row">
-                    <span class="mobile-detail-label">Roster Count:</span>
-                    <span class="font-bold">${count} Assigned Students</span>
-                  </div>
-                  ${isAdmin ? `
+                  <div class="mobile-group-card-body hidden">
+                    <div class="mobile-detail-row">
+                      <span class="mobile-detail-label">Leader Student ID:</span>
+                      <span class="font-mono text-muted">${g.leaderId || 'N/A'}</span>
+                    </div>
+                    <div class="mobile-detail-row">
+                      <span class="mobile-detail-label">Roster Count:</span>
+                      <span class="font-bold">${count} Assigned Students</span>
+                    </div>
                     <div class="mobile-card-actions mt-2">
                       <button class="btn btn-sm btn-outline-cyan edit-dash-group-btn w-100" data-id="${g.id}">
                         ✏️ Edit Leader
                       </button>
                     </div>
-                  ` : ''}
+                  </div>
                 </div>
-              </div>
-            `;
-          }).join('')}
+              `;
+            }).join('')}
+          </div>
         </div>
-      </div>
+      ` : ''}
 
       <!-- Quick Action Shortcuts Sidebar -->
       <div class="card shortcuts-card">
